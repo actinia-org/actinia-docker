@@ -1,0 +1,17 @@
+.git
+.github
+.gitignore
+.travis
+.travis.yml
+
+README.md
+LICENSE
+
+actinia-data
+create-docs.sh
+docker-compose*
+docker-swarm*
+fluentd
+redis_data
+
+Dockerfile*
