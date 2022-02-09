@@ -63,11 +63,7 @@ jobs:
           pull: true
           context: .
           tags: ${{ steps.meta.outputs.tags }}
-          file: docker/actinia-core-alpine/Dockerfile
-          # overwriting reserved secret variable
-          secrets: |
-              "GITHUB_TOKEN=${{ secrets.TOKEN_GITHUB }}"
-              "GITHUB_USERNAME=${{ secrets.USERNAME_GITHUB }}"
+          file: actinia-alpine/Dockerfile
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
 
@@ -86,7 +82,7 @@ jobs:
         uses: docker/metadata-action@v3
         with:
           # images: ${DOCKERHUB_REPOSITORY}
-          images: mundialis/actinia-core
+          images: mundialis/actinia
           tags: |
             type=ref,event=tag
             type=semver,pattern={{major}}.{{minor}}
@@ -109,10 +105,6 @@ jobs:
           pull: true
           context: .
           tags: ${{ steps.meta.outputs.tags }}
-          file: docker/actinia-core-alpine/Dockerfile
-          # overwriting reserved secret variable
-          secrets: |
-              "GITHUB_TOKEN=${{ secrets.TOKEN_GITHUB }}"
-              "GITHUB_USERNAME=${{ secrets.USERNAME_GITHUB }}"
+          file: actinia-alpine/Dockerfile
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
