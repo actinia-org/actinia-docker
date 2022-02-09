@@ -10,6 +10,7 @@ ENV GDAL_CACHEMAX=2000
 ENV GRASS_COMPRESSOR=ZSTD
 ENV GRASS_SKIP_MAPSET_OWNER_CHECK 1
 ENV GISBASE ""
+ENV ACTINIA_CORE_VERSION=3.1.1
 
 USER root
 
@@ -34,9 +35,15 @@ RUN grass --tmp-location EPSG:4326 --exec g.version -rge && \
 # GRASS GIS addons installation
 # git clone various openEO plugins (local checkout due to non-standard repo structure)
 RUN git clone https://github.com/mundialis/openeo-addons.git /src/openeo-addons
+
+# TODO: Fix requirements installation for openeo-udf, needed by t.rast.udf.
+# RUN git clone https://github.com/Open-EO/openeo-udf.git /src/openeo-udf
+# WORKDIR /src/openeo-udf
+# RUN pip3 install -r requirements.txt && python3 setup.py install
+
 COPY grass_addons_list.csv /src/grass_addons_list.csv
 
-RUN while IFS=, read -r ADDON SERVER; do unset URL; test -z $SERVER || URL="url=$SERVER"; grass --tmp-location EPSG:4326 --exec g.extension -s extension=$ADDON $URL;done < /src/grass_addons_list.csv
+RUN while IFS=, read -r ADDON SERVER; do if [[ $ADDON != "#*" ]]; then unset URL; test -z $SERVER || URL="url=$SERVER"; grass --tmp-location EPSG:4326 --exec g.extension -s extension=$ADDON $URL;fi;done < /src/grass_addons_list.csv
 
 # actinia-core and plugins installation
 WORKDIR /build
@@ -71,7 +78,8 @@ RUN curl -L --output /build/${WHEEL_NAME} \
     https://github.com/mundialis/actinia-api/releases/download/${ACTINIA_API_VERSION}/${WHEEL_NAME}
 
 # TODO: use wheel when exists
-RUN git clone https://github.com/mundialis/actinia_core.git /src/actinia_core
+RUN git clone --depth 1 --branch ${ACTINIA_CORE_VERSION} \
+    https://github.com/mundialis/actinia_core.git /src/actinia_core
 WORKDIR /src/actinia_core
 RUN python3 setup.py sdist bdist_wheel -d /build
 

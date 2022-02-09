@@ -2,40 +2,24 @@ version: "3"
 services:
 
   actinia:
-    image: actinia:latest
-    deploy:
-      replicas: 8
-      resources:
-        limits:
-          cpus: "2"
-          memory: 2048M
-      restart_policy:
-        condition: on-failure
+    # build:
+      # context: actinia-prod/
+    image: mundialis/actinia:1.0.0
     volumes:
       - ./actinia-data/grassdb:/actinia_core/grassdb:Z
-      - ./actinia-data/pgpass:/mnt/pgpass:Z
-      - ./actinia-data/geodata_dir:/mnt/geodata:Z
       - ./actinia-data/userdata:/actinia_core/userdata
+      - ./actinia-data/pgpass:/mnt/pgpass
+      - ./actinia-data/geodata_dir:/mnt/geodata
       - ./actinia-data/workspace/temp_db:/actinia_core/workspace/temp_db
       - ./actinia-data/workspace/tmp:/actinia_core/workspace/tmp
       - ./actinia-data/resources:/actinia_core/resources
     ports:
       - "8088:8088"
-    networks:
-      - backend
     depends_on:
       - redis
 
   redis:
     image: redis:5.0.4-alpine
-    deploy:
-      replicas: 1
-      resources:
-        limits:
-          cpus: "1"
-          memory: 2048M
-      placement:
-        constraints: [node.role == manager]
     volumes:
       - ./redis_data:/data
     environment:
@@ -48,8 +32,3 @@ services:
       --requirepass "$$(cat $$REDIS_PASS_FILE)"
       '
     ]
-    networks:
-      - backend
-
-networks:
-  backend:
