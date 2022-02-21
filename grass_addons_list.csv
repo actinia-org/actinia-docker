@@ -31,7 +31,7 @@ t.rast.hants,/src/openeo-addons/t.rast.hants
 t.rast.mask,/src/openeo-addons/t.rast.mask
 t.rast.ndvi,/src/openeo-addons/t.rast.ndvi
 t.rast.oeapply,/src/openeo-addons/t.rast.oeapply
-t.rast.renamebands,/src/openeo-addons/t.rast.renamebands
+t.rast.renamelabels,/src/openeo-addons/t.rast.renamelabels
 t.rast.resample,/src/openeo-addons/t.rast.resample
 # TODO: install https://github.com/Open-EO/openeo-udf
 # t.rast.udf,/src/openeo-addons/t.rast.udf
