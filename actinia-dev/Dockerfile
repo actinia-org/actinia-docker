@@ -13,6 +13,7 @@ RUN pip3 uninstall actinia-core -y
 
 COPY actinia-dev/actinia.cfg /etc/default/actinia
 
+WORKDIR /src
 # Even though the code is mounted, it need to be installed once
 RUN rm -rf /src/actinia_core
 RUN git clone https://github.com/mundialis/actinia_core.git /src/actinia_core
