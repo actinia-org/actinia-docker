@@ -10,6 +10,7 @@ ENV FLASK_DEBUG=1
 ENV DEFAULT_CONFIG_PATH=/etc/default/actinia
 
 RUN pip3 uninstall actinia-core -y
+RUN pip3 uninstall actinia_core -y
 
 COPY actinia-dev/actinia.cfg /etc/default/actinia
 
@@ -21,6 +22,34 @@ RUN git clone https://github.com/mundialis/actinia_core.git /src/actinia_core
 WORKDIR /src/actinia_core/
 RUN pip3 install -e .
 
-# for actinia plugin development, add e.g.
-# RUN pip3 uninstall actinia-module-plugin.wsgi -y
-# WORKDIR /src/actinia-module-plugin
+# for actinia plugin development, incomment matching block
+
+# RUN pip3 uninstall actinia_module_plugin.wsgi -y
+# RUN git clone https://github.com/mundialis/actinia-module-plugin.git /src/actinia-module-plugin
+# WORKDIR /src/actinia-module-plugin/
+# RUN pip3 install -e .
+
+# RUN pip3 uninstall actinia_stac_plugin.wsgi -y
+# RUN git clone https://github.com/mundialis/actinia-stac-plugin.git /src/actinia-stac-plugin
+# WORKDIR /src/actinia-stac-plugin/
+# RUN pip3 install -e .
+
+# RUN pip3 uninstall actinia_metadata_plugin.wsgi -y
+# RUN git clone https://github.com/mundialis/actinia-metadata-plugin.git /src/actinia-metadata-plugin
+# WORKDIR /src/actinia-metadata-plugin/
+# RUN pip3 install -e .
+
+# RUN pip3 uninstall actinia_statistic_plugin -y
+# RUN git clone https://github.com/mundialis/actinia_statistic_plugin.git /src/actinia_statistic_plugin
+# WORKDIR /src/actinia_statistic_plugin/
+# RUN pip3 install -e .
+
+# RUN pip3 uninstall actinia_satellite_plugin -y
+# RUN git clone https://github.com/mundialis/actinia_satellite_plugin.git /src/actinia_satellite_plugin
+# WORKDIR /src/actinia_satellite_plugin/
+# RUN pip3 install -e .
+
+# RUN pip3 uninstall actinia_api -y
+# RUN git clone https://github.com/mundialis/actinia-api.git /src/actinia-api
+# WORKDIR /src/actinia-api/
+# RUN pip3 install -e .
