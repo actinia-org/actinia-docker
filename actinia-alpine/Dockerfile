@@ -10,7 +10,7 @@ ENV GDAL_CACHEMAX=2000
 ENV GRASS_COMPRESSOR=ZSTD
 ENV GRASS_SKIP_MAPSET_OWNER_CHECK 1
 ENV GISBASE ""
-ENV ACTINIA_CORE_VERSION=3.2.0
+ENV ACTINIA_CORE_VERSION=4.0.0
 
 USER root
 
@@ -48,12 +48,12 @@ RUN while IFS=, read -r ADDON SERVER; do if [[ $ADDON != "#*" ]]; then unset URL
 # actinia-core and plugins installation
 WORKDIR /build
 
-ARG PLUGIN_VERSION=0.1.2
+ARG PLUGIN_VERSION=0.2.0
 ARG WHEEL_NAME=actinia_statistic_plugin-${PLUGIN_VERSION}-py2.py3-none-any.whl
 RUN curl -L --output /build/${WHEEL_NAME} \
     https://github.com/mundialis/actinia_statistic_plugin/releases/download/${PLUGIN_VERSION}/${WHEEL_NAME}
 
-ARG PLUGIN_VERSION=0.0.4
+ARG PLUGIN_VERSION=0.1.0
 ARG WHEEL_NAME=actinia_satellite_plugin-${PLUGIN_VERSION}-py2.py3-none-any.whl
 RUN curl -L --output /build/${WHEEL_NAME} \
     https://github.com/mundialis/actinia_satellite_plugin/releases/download/${PLUGIN_VERSION}/${WHEEL_NAME}
@@ -62,17 +62,18 @@ ARG PLUGIN_VERSION=1.0.2
 ARG WHEEL_NAME=actinia_metadata_plugin.wsgi-${PLUGIN_VERSION}-py2.py3-none-any.whl
 RUN curl -L --output /build/${WHEEL_NAME} \
     https://github.com/mundialis/actinia-metadata-plugin/releases/download/${PLUGIN_VERSION}/${WHEEL_NAME}
-ARG PLUGIN_VERSION=2.2.4
+
+ARG PLUGIN_VERSION=2.3.1
 ARG WHEEL_NAME=actinia_module_plugin.wsgi-${PLUGIN_VERSION}-py2.py3-none-any.whl
 RUN curl -L --output /build/${WHEEL_NAME} \
     https://github.com/mundialis/actinia-module-plugin/releases/download/${PLUGIN_VERSION}/${WHEEL_NAME}
 
-ARG PLUGIN_VERSION=0.0.1
+ARG PLUGIN_VERSION=0.1.0
 ARG WHEEL_NAME=actinia_stac_plugin.wsgi-${PLUGIN_VERSION}-py2.py3-none-any.whl
 RUN curl -L --output /build/${WHEEL_NAME} \
     https://github.com/mundialis/actinia-stac-plugin/releases/download/${PLUGIN_VERSION}/${WHEEL_NAME}
 
-ENV ACTINIA_API_VERSION=3.0.1
+ENV ACTINIA_API_VERSION=3.1.0
 ARG WHEEL_NAME=actinia_api-${ACTINIA_API_VERSION}-py3-none-any.whl
 RUN curl -L --output /build/${WHEEL_NAME} \
     https://github.com/mundialis/actinia-api/releases/download/${ACTINIA_API_VERSION}/${WHEEL_NAME}
