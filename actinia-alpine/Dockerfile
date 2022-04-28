@@ -1,9 +1,11 @@
+FROM mundialis/actinia:alpine-dependencies-v1 as base
 FROM mundialis/grass-py3-pdal:releasebranch_8_0-alpine as grass
-FROM mundialis/esa-snap:s1tbx-8.0.3 as snap
-FROM mundialis/actinia-core:alpine-runtime-pkgs_v7
+FROM mundialis/esa-snap:s1tbx-d3eb736 as snap
+
+FROM base
 
 LABEL authors="Carmen Tawalika,Anika Bettge,Markus Neteler,Sören Gebbert"
-LABEL maintainer="tawalika@mundialis.de,bettge@mundialis.de,neteler@mundialis.de,soerengebbert@gmail.com"
+LABEL maintainer="tawalika@mundialis.de,bettge@mundialis.de,neteler@mundialis.de"
 
 ENV LC_ALL "en_US.UTF-8"
 ENV GDAL_CACHEMAX=2000
@@ -26,7 +28,6 @@ RUN /usr/bin/python3 /root/.snap/about.py
 COPY --from=grass /usr/local/bin/grass /usr/local/bin/grass
 COPY --from=grass /usr/local/grass* /usr/local/grass/
 RUN pip3 install --upgrade pip six grass-session --ignore-installed six
-RUN ln -s /usr/local/grass /usr/local/grass7
 RUN ln -s /usr/local/grass `grass --config path`
 RUN grass --tmp-location EPSG:4326 --exec g.version -rge && \
     pdal --version && \
@@ -90,7 +91,10 @@ WORKDIR /src/actinia_core
 RUN python3 setup.py sdist bdist_wheel -d /build
 
 # Install actinia-core and plugins
-RUN pip3 install /build/*
+# Difference to `pip3 install /build/*`: Loop uses already installed
+# dependencies while installing in bulk will update dependencies, even
+# though older ones are already installed.
+RUN for i in /build/*; do pip3 install $i; done
 
 # Duplicate install actinia_core requirements. They are already included
 # in alpine-build / alpine-runtime images, but check for updates here.

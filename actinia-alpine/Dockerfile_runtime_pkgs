@@ -116,7 +116,6 @@ RUN apk update; \
 RUN python3 -m ensurepip && pip3 install --upgrade pip pep517 wheel
 
 # Duplicated in final images, only here to safe time
-# RUN curl https://raw.githubusercontent.com/mundialis/actinia_core/main/requirements.txt \
-RUN curl https://raw.githubusercontent.com/mmacata/actinia_core/da505c456666f7dd28a9cb635f58f53b4c9d8e17/requirements.txt \
+RUN curl https://raw.githubusercontent.com/mundialis/actinia_core/main/requirements.txt \
     > requirements.txt && pip3 install -r requirements.txt && \
     rm requirements.txt
