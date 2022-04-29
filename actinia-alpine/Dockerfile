@@ -5,7 +5,7 @@ FROM mundialis/esa-snap:s1tbx-d3eb736 as snap
 FROM base
 
 LABEL authors="Carmen Tawalika,Anika Bettge,Markus Neteler,Sören Gebbert"
-LABEL maintainer="tawalika@mundialis.de,bettge@mundialis.de,neteler@mundialis.de"
+LABEL maintainer="tawalika@mundialis.de,weinmann@mundialis.de,neteler@mundialis.de"
 
 ENV LC_ALL "en_US.UTF-8"
 ENV GDAL_CACHEMAX=2000
