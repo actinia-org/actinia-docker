@@ -14,8 +14,8 @@ $ docker build \
         --no-cache \
         --file actinia-alpine/Dockerfile_alpine_dependencies \
         --tag actinia:alpine-dependencies .
-$ docker tag actinia:alpine-dependencies mundialis/actinia:alpine-dependencies_v1
-$ docker push mundialis/actinia:alpine-dependencies_v1
+$ docker tag actinia:alpine-dependencies mundialis/actinia:alpine-dependencies-v1
+$ docker push mundialis/actinia:alpine-dependencies-v1
 
 $ docker build \
         --pull \
