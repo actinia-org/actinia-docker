@@ -6,7 +6,7 @@ https://hub.docker.com/r/mundialis/actinia-core
 
 ## Background info
 
-This docker image is based on https://hub.docker.com/r/mundialis/grass-py3-pdal (tag: stable-ubuntu) which provides GRASS GIS 7.8 (release branch, grass78) with Python3 and PDAL support. For GRASS GIS 7.9, change base image to grass-py3-pdal:latest-ubuntu which provides GRASS GIS 7.9 (master, grass79).
+This docker image is based on https://hub.docker.com/r/mundialis/grass-py3-pdal (tag: stable-ubuntu) which provides GRASS GIS 7.8 (release branch, grass78) with Python3 and PDAL support. For GRASS GIS 8, change base image to grass-py3-pdal:latest-ubuntu which provides GRASS GIS 8 (grass).
 
 The Dockerfile contained in this folder is used to build on Dockerhub.
 If you want to build manually...
