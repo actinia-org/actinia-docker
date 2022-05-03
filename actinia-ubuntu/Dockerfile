@@ -1,7 +1,7 @@
 FROM mundialis/grass-py3-pdal:stable-ubuntu
 
-# based on GRASS GIS releasebranch_7_8 (grass78)
-# for latest GRASS GIS (79), change base image to
+# based on GRASS GIS releasebranch_8_2 (grass)
+# for latest GRASS GIS 8, change base image to
 # FROM mundialis/grass-py3-pdal:latest-ubuntu
 
 LABEL authors="Carmen Tawalika,Anika Weinmann,Markus Neteler,Sören Gebbert"
@@ -59,14 +59,14 @@ RUN mkdir -p /actinia_core/grassdb && \
 # Create generic GRASS GIS binary name regardless of version number
 RUN ln -sf `find /usr/local/bin -name "grass??" | sort | tail -n 1` /usr/local/bin/grass
 # Create a generic link to GRASS GIS libs (simplifies actinia configuration)
-RUN ln -s `grass --config path` /usr/local/grass7
+RUN ln -s `grass --config path` /usr/local/grass
 # show installed versions
 RUN grass --tmp-location EPSG:4326 --exec g.version -rge && \
     pdal --version && \
     python3 --version
 
 # Install selected GRASS GIS addons. Done with -s, so it can be used by actinia
-# https://grass.osgeo.org/grass79/manuals/g.extension.html
+# https://grass.osgeo.org/grass-stable/manuals/g.extension.html
 # -s uses $GISBASE instead of $GRASS_ADDON_BASE
 WORKDIR /src
 

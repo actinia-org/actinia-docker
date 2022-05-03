@@ -12,12 +12,12 @@ cp /mnt/pgpass/.pgpass $HOME/.pgpass
 chmod 0600 $HOME/.pgpass
 
 # copy db.login file from mounted (!) file
-cp /mnt/pgpass/.grass7 $HOME/.grass7/dblogin
-chmod 0600 $HOME/.grass7/dblogin
+cp /mnt/pgpass/.grass8 $HOME/.grass8/dblogin
+chmod 0600 $HOME/.grass8/dblogin
 
 # copy db.login file to actinia-core tmp location
-mkdir -p /tmp/:/root/.grass7
-cp /root/.grass7/dblogin /tmp/:/root/.grass7/
+mkdir -p /tmp/:/root/.grass8
+cp /root/.grass8/dblogin /tmp/:/root/.grass8/
 
 # Create default location in mounted (!) directory
 [ ! -d "/actinia_core/grassdb/utm32n" ] && grass --text -e -c 'EPSG:25832' /actinia_core/grassdb/utm32n
