@@ -59,7 +59,7 @@ sudo sysctl -w vm.max_map_count=262144
 <a id="local-dev-setup"></a>
 # Local dev-setup with docker
 
-For a dev setup where no actinia plugins are involved, simply follow the [steps explained in actinia-core](https://github.com/mundialis/actinia_core/tree/main/docker#local-dev-setup-with-docker) directly.
+For a dev setup where no actinia plugins are involved, simply follow the [steps explained in actinia-core](https://github.com/mundialis/actinia_core/tree/main/docker#local-dev-setup-with-docker) directly. Instead of from `actinia_core/docker` run the steps from `actinia-docker`.
 
 
 ## Local dev-setup for actinia-core plugins
