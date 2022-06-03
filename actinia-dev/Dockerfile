@@ -19,6 +19,8 @@ WORKDIR /src
 RUN rm -rf /src/actinia_core
 RUN git clone https://github.com/mundialis/actinia_core.git /src/actinia_core
 
+RUN git config --global --add safe.directory /src/actinia*
+
 WORKDIR /src/actinia_core/
 RUN pip3 install -e .
 
