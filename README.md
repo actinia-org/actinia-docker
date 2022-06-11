@@ -24,6 +24,8 @@ On startup, some GRASS GIS locations are created by default but they are still e
 
 This repository is a set of Dockerimages and docker-compose configs.
 
+Ready to use Dockerimages are available at https://hub.docker.com/r/mundialis/actinia-core
+
 __actinia-alpine__
 * build and pushed to [`mundialis/actinia`](https://hub.docker.com/repository/docker/mundialis/actinia)
 * includes actinia-plugins
