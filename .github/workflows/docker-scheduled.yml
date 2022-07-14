@@ -1,0 +1,46 @@
+name: Update alpine actinia dependencies
+on:
+  schedule:
+  # every 14th at 2200
+    - cron: '0 22 14 * *'
+
+env:
+    DOCKERHUB_REPOSITORY: mundialis/actinia
+
+jobs:
+
+  docker-alpine-dependencies:
+    name: build and push dependency image
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - id: meta
+        name: Create tag name
+        run: |
+          date=`date -I`
+          tag=${DOCKERHUB_REPOSITORY}:alpine-dependencies-$date
+          echo "::set-output name=tags::$tag"
+      - name: log
+        run: echo ${{ steps.meta.outputs.tags }}
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN  }}
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          pull: true
+          context: .
+          tags: ${{ steps.meta.outputs.tags }}
+          file: actinia-alpine/Dockerfile
+      - name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
