@@ -1,4 +1,4 @@
-FROM mundialis/actinia:alpine-dependencies-v1 as base
+FROM mundialis/actinia:alpine-dependencies-2022-07-15 as base
 FROM mundialis/grass-py3-pdal:releasebranch_8_2-alpine as grass
 FROM mundialis/esa-snap:s1tbx-d3eb736 as snap
 

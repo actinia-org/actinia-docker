@@ -119,3 +119,8 @@ RUN python3 -m ensurepip && pip3 install --upgrade pip pep517 wheel
 RUN curl https://raw.githubusercontent.com/mundialis/actinia_core/main/requirements.txt \
     > requirements.txt && pip3 install -r requirements.txt && \
     rm requirements.txt
+
+# Fix for scikit-learn segmentation fault error
+# TODO: check if this can be removed in future
+RUN apk add openblas openblas-dev lapack lapack-dev
+RUN pip3 install --upgrade scikit-learn
