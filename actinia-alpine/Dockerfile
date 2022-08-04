@@ -12,7 +12,7 @@ ENV GDAL_CACHEMAX=2000
 ENV GRASS_COMPRESSOR=ZSTD
 ENV GRASS_SKIP_MAPSET_OWNER_CHECK 1
 ENV GISBASE ""
-ENV ACTINIA_CORE_VERSION=4.1.0
+ENV ACTINIA_CORE_VERSION=4.2.0
 
 USER root
 
@@ -79,16 +79,14 @@ ARG WHEEL_NAME=actinia_tiling_plugin.wsgi-${PLUGIN_VERSION}-py2.py3-none-any.whl
 RUN curl -L --output /build/${WHEEL_NAME} \
     https://github.com/mundialis/actinia-tiling-plugin/releases/download/${PLUGIN_VERSION}/${WHEEL_NAME}
 
-ENV ACTINIA_API_VERSION=3.1.0
+ENV ACTINIA_API_VERSION=3.2.0
 ARG WHEEL_NAME=actinia_api-${ACTINIA_API_VERSION}-py3-none-any.whl
 RUN curl -L --output /build/${WHEEL_NAME} \
     https://github.com/mundialis/actinia-api/releases/download/${ACTINIA_API_VERSION}/${WHEEL_NAME}
 
-# TODO: use wheel when exists
-RUN git clone --depth 1 --branch ${ACTINIA_CORE_VERSION} \
-    https://github.com/mundialis/actinia_core.git /src/actinia_core
-WORKDIR /src/actinia_core
-RUN python3 setup.py sdist bdist_wheel -d /build
+ARG WHEEL_NAME=actinia_core-${ACTINIA_CORE_VERSION}-py2.py3-none-any.whl
+RUN curl -L --output /build/${WHEEL_NAME} \
+    https://github.com/mundialis/actinia_core/releases/download/${ACTINIA_CORE_VERSION}/${WHEEL_NAME}
 
 # Install actinia-core and plugins
 # Difference to `pip3 install /build/*`: Loop uses already installed
@@ -98,7 +96,7 @@ RUN for i in /build/*; do pip3 install $i; done
 
 # Duplicate install actinia_core requirements. They are already included
 # in alpine-build / alpine-runtime images, but check for updates here.
-RUN pip3 install -r /src/actinia_core/requirements.txt
+RUN pip3 install -r https://raw.githubusercontent.com/mundialis/actinia_core/${ACTINIA_CORE_VERSION}/requirements.txt
 
 # Copy actinia config file and start scripts + set needed envs
 COPY actinia-alpine/actinia.cfg /etc/default/actinia
