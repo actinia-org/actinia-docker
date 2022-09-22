@@ -1,4 +1,4 @@
-FROM mundialis/actinia:alpine-dependencies-2022-07-15 as base
+FROM mundialis/actinia:alpine-dependencies-2022-09-14 as base
 FROM mundialis/grass-py3-pdal:releasebranch_8_2-alpine as grass
 FROM mundialis/esa-snap:s1tbx-d3eb736 as snap
 
@@ -12,7 +12,7 @@ ENV GDAL_CACHEMAX=2000
 ENV GRASS_COMPRESSOR=ZSTD
 ENV GRASS_SKIP_MAPSET_OWNER_CHECK 1
 ENV GISBASE ""
-ENV ACTINIA_CORE_VERSION=4.2.1
+ENV ACTINIA_CORE_VERSION=4.3.0
 
 USER root
 
