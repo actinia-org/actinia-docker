@@ -41,6 +41,6 @@ jobs:
           pull: true
           context: .
           tags: ${{ steps.meta.outputs.tags }}
-          file: actinia-alpine/Dockerfile
+          file: actinia-alpine/Dockerfile_alpine_dependencies
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
