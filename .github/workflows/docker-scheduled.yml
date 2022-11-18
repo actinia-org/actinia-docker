@@ -1,8 +1,8 @@
 name: Update alpine actinia dependencies
 on:
   schedule:
-  # every 14th at 2200
-    - cron: '0 22 14 * *'
+  # every 18th at 1700
+    - cron: '0 17 18 * *'
 
 env:
     DOCKERHUB_REPOSITORY: mundialis/actinia
