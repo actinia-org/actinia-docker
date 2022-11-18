@@ -3,6 +3,7 @@ on:
   schedule:
   # every 14th at 22UTC
     - cron: '00 22 14 * *'
+  workflow_dispatch:
 
 env:
     DOCKERHUB_REPOSITORY: mundialis/actinia
