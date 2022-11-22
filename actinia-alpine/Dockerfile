@@ -1,6 +1,6 @@
-FROM mundialis/actinia:alpine-dependencies-2022-09-23 as base
+FROM mundialis/actinia:alpine-dependencies-2022-11-18 as base
 FROM mundialis/grass-py3-pdal:releasebranch_8_2-alpine as grass
-FROM mundialis/esa-snap:s1tbx-d3eb736 as snap
+FROM mundialis/esa-snap:s1tbx-3885c70 as snap
 
 FROM base
 
@@ -12,7 +12,7 @@ ENV GDAL_CACHEMAX=2000
 ENV GRASS_COMPRESSOR=ZSTD
 ENV GRASS_SKIP_MAPSET_OWNER_CHECK 1
 ENV GISBASE ""
-ENV ACTINIA_CORE_VERSION=4.3.1
+ENV ACTINIA_CORE_VERSION=4.4.0
 
 USER root
 
@@ -20,7 +20,7 @@ USER root
 ENV LD_LIBRARY_PATH ".:$LD_LIBRARY_PATH"
 COPY --from=snap /root/.snap /root/.snap
 COPY --from=snap /usr/local/snap /usr/local/snap
-RUN (cd /root/.snap/snap-python/snappy && python3 setup.py install)
+RUN (cd /root/.snap/snap-python/snappy && pip3 install .)
 RUN /usr/bin/python3 -c 'from snappy import ProductIO'
 RUN /usr/bin/python3 /root/.snap/about.py
 
@@ -49,7 +49,7 @@ RUN while IFS=, read -r ADDON SERVER; do if [[ $ADDON != "#*" ]]; then unset URL
 # actinia-core and plugins installation
 WORKDIR /build
 
-ARG PLUGIN_VERSION=0.2.0
+ARG PLUGIN_VERSION=0.2.1
 ARG WHEEL_NAME=actinia_statistic_plugin-${PLUGIN_VERSION}-py2.py3-none-any.whl
 RUN curl -L --output /build/${WHEEL_NAME} \
     https://github.com/mundialis/actinia_statistic_plugin/releases/download/${PLUGIN_VERSION}/${WHEEL_NAME}
@@ -64,12 +64,12 @@ ARG WHEEL_NAME=actinia_metadata_plugin.wsgi-${PLUGIN_VERSION}-py2.py3-none-any.w
 RUN curl -L --output /build/${WHEEL_NAME} \
     https://github.com/mundialis/actinia-metadata-plugin/releases/download/${PLUGIN_VERSION}/${WHEEL_NAME}
 
-ARG PLUGIN_VERSION=2.4.0
+ARG PLUGIN_VERSION=2.4.1
 ARG WHEEL_NAME=actinia_module_plugin.wsgi-${PLUGIN_VERSION}-py2.py3-none-any.whl
 RUN curl -L --output /build/${WHEEL_NAME} \
     https://github.com/mundialis/actinia-module-plugin/releases/download/${PLUGIN_VERSION}/${WHEEL_NAME}
 
-ARG PLUGIN_VERSION=0.1.0
+ARG PLUGIN_VERSION=0.1.1
 ARG WHEEL_NAME=actinia_stac_plugin.wsgi-${PLUGIN_VERSION}-py2.py3-none-any.whl
 RUN curl -L --output /build/${WHEEL_NAME} \
     https://github.com/mundialis/actinia-stac-plugin/releases/download/${PLUGIN_VERSION}/${WHEEL_NAME}
