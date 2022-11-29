@@ -18,7 +18,7 @@ services:
       # - ../actinia-metadata-plugin/:/src/actinia-metadata-plugin/.
       # - ../actinia-module-plugin/:/src/actinia-module-plugin/.
       # - ../actinia-stac-plugin/:/src/actinia-stac-plugin/.
-      # - ../actinia-api/:/src/actinia-api/.
+      # - ../actinia-api:/src/actinia-api/.
     ports:
       - "8088:8088"
     depends_on:
@@ -44,6 +44,39 @@ services:
     ]
     ports:
         - "6379:6379"
+    networks:
+    -   actinia-dev
+
+  postgis:
+    image: postgis/postgis:13-3.2-alpine
+    volumes:
+      - ./postgis/postgres_data:/var/lib/postgresql/data
+      - ./postgis/init_data/01_init_keycloak.sql:/docker-entrypoint-initdb.d/01_init_keycloak.sql
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: ${POSTGRES_PW}
+    networks:
+    -   actinia-dev
+
+  keycloak:
+    image: jboss/keycloak:16.1.1
+    environment:
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: ${KEYCLOAK_PW}
+      DB_VENDOR: postgres
+      DB_ADDR: postgis
+      DB_PORT: 5432
+      DB_DATABASE: keycloak
+      DB_USER: keycloak
+      DB_SCHEMA: public
+      DB_PASSWORD: ${POSTGRES_PW}
+      # Uncomment the line below if you want to specify JDBC parameters. The parameter below is just an example, and it shouldn't be used in production without knowledge. It is highly recommended that you read the PostgreSQL JDBC driver documentation in order to use it.
+      #JDBC_PARAMS: "ssl=true"
+    ports:
+      - 8080:8080
+    depends_on:
+      - postgis
     networks:
     -   actinia-dev
 

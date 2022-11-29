@@ -110,6 +110,89 @@ repos/actinia/
 Then move the `.vscode` folder from this repository one level up and
 open the whole actinia folder as workspace in vscode. This can be done by eg. typing `code $PATH_TO_MY_ACTINIA_CHECKOUTS` in a terminal. Then press `F5` and after a few seconds, a browser window should be opened pointing to the version endpoint. For debugging tips, [read the docs](https://code.visualstudio.com/Docs/editor/debugging#_debug-actions).
 
+## Local dev-setup for actinia-core with Keycloak
+**<span style="color:red">For deployment change passwords in .env file!</span>**
+
+Add to the `actinia.cfg` the configuration for Keycloak:
+```
+[KEYCLOAK]
+config_path = /etc/default/keycloak.json
+group_prefix = /actinia-user/
+```
+where the `config_path` is the file to the Keycloak OIDC JSON from the actinia client in Keykloak (for the DEV setup it is in `actinia-dev/keycloak.json`).
+
+Then you can start the docker DEV setup as in [local dev-setup with docker](https://github.com/mundialis/actinia_core/tree/main/docker#local-dev-setup-with-docker).
+```
+docker-compose -f docker-compose-dev.yml build
+# start first postgis
+docker-compose -f docker-compose-dev.yml up -d postgis
+# then start keycloak
+docker-compose -f docker-compose-dev.yml up -d keycloak
+```
+
+By **first Keycloak setup** you have to load the inital keycloak data:
+1. **<span style="color:red">Problem:</span>** `accessible_datasets` and `accessible_modules` can get to long so that `org.postgresql.util.PSQLException: ERROR: value too long for type character varying(255)` occurs.
+    To fix this you can change in PostgreSQL the value type to text:
+    ```
+    docker exec -it actinia-docker_postgis_1 sh
+
+    psql -h localhost -U keycloak
+    \c keycloak
+    \d user_attribute
+    ALTER TABLE user_attribute ALTER COLUMN value type text;
+    ```
+    After the change you have to restart keycloak
+    ```
+    docker restart actinia-docker_keycloak_1
+    ```
+2. Import inital Keycloak data:
+  ```
+  docker cp ./actinia-keycloak/init_data/keycloak_export_dev.json actinia-docker_keycloak_1:/tmp/keycloak_export.json
+
+  docker exec -it actinia-docker_keycloak_1 /opt/jboss/keycloak/bin/standalone.sh -Djboss.socket.binding.port-offset=100 -Dkeycloak.migration.action=import -Dkeycloak.migration.provider=singleFile -Dkeycloak.migration.usersExportStrategy=REALM_FILE -Dkeycloak.migration.file=/tmp/keycloak_export.json
+  ```
+  Wait until finished (look out for Import finished successfully in the logs) and exit the container.
+  After the change you have to restart keycloak
+  ```
+  docker restart actinia-docker_keycloak_1
+  ```
+3. now you can access keycloak via http://localhost:8080 (admin:keycloak)
+  * Admin console: http://localhost:8080/auth/admin
+  * User console: http://localhost:8080/auth/realms/testrealm/account/#/
+
+Then you can start actinia:
+```
+docker-compose -f docker-compose-dev.yml run --rm --service-ports --entrypoint sh actinia
+python3 setup.py install
+sh /src/start.sh
+```
+And test it, e.g. with getting the token via Python3:
+```python3
+from keycloak import KeycloakOpenID
+
+keycloak_url = "http://localhost:8080/auth/"
+realm = "actinia-realm"
+client_id = "actinia-client"
+client_secret_key = "KCXeHuJCLfd8qIhwIYkWZLrkauzBkLAb"
+
+keycloak_openid = KeycloakOpenID(server_url=keycloak_url, client_id=client_id, realm_name=realm, client_secret_key=client_secret_key)
+
+# superadmin
+user = "actinia-superadmin"
+pw = "actinia-superadmin"
+
+token = keycloak_openid.token(user, pw)
+print(token["access_token"])
+```
+Request actinia via Keycloak token:
+```
+TOKEN=xxx
+curl -H 'Accept: application/json' -H "Authorization: Bearer ${TOKEN}" http://localhost:8088/api/v3/version | jq
+# request mapsets
+curl -H 'Accept: application/json' -H "Authorization: Bearer ${TOKEN}" http://localhost:8088/api/v3/locations/nc_spm_08/mapsets | jq
+```
+
+
 <a id="grass-gis"></a>
 # Testing GRASS GIS inside a container
 
@@ -118,7 +201,8 @@ See this [README](https://github.com/mundialis/actinia_core/tree/main/docker#tes
 <a id="production-deployment"></a>
 # Production deployment
 
-To run actinia_core in production systems, you can use the docker-compose-prod.yml. Please change before the default redis password in redis_data/config/.redis and inside the actinia.cfg. Also incomment the `build` block in the `docker-compose.yml`.
+To run actinia_core in production systems, you can use the docker-compose-prod.yml. Please change before the default redis password in redis_data/config/.redis and inside the actinia.cfg. Also incomment the `build` block in the `docker-compose.yml`. Additional change the keycloak and postgis passwords in `.env` file.
+
 To start the server, run:
 
 ```
