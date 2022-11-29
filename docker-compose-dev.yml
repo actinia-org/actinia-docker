@@ -14,11 +14,11 @@ services:
       - ./actinia-data/workspace/tmp:/actinia_core/workspace/tmp
       - ./actinia-data/resources:/actinia_core/resources
       - ../actinia_core:/src/actinia_core/.
-      - ../actinia-api:/src/actinia-api/.
-      - ../actinia_statistic_plugin/:/src/actinia_statistic_plugin/.
+      # - ../actinia_statistic_plugin/:/src/actinia_statistic_plugin/.
       # - ../actinia-metadata-plugin/:/src/actinia-metadata-plugin/.
-      - ../actinia-module-plugin/:/src/actinia-module-plugin/.
+      # - ../actinia-module-plugin/:/src/actinia-module-plugin/.
       # - ../actinia-stac-plugin/:/src/actinia-stac-plugin/.
+      # - ../actinia-api:/src/actinia-api/.
     ports:
       - "8088:8088"
     depends_on:
@@ -79,20 +79,6 @@ services:
       - postgis
     networks:
     -   actinia-dev
-
-  # geoserver-dev:
-  #   image: gs
-  #   restart: unless-stopped
-  #   environment:
-  #     - EXTRA_JAVA_OPTS=-DGEOSERVER_CSRF_WHITELIST=actinia.mundialis.de
-  #   ports:
-  #     - 8080:8080
-  #   volumes:
-  #   - ./actinia-data/grassdb:/actinia_core/grassdb:Z
-  #   - ./actinia-data/userdata:/actinia_core/userdata:Z
-  #   # - /mnt/storage/geoserver-dev.mundialis.de_datadir:/opt/geoserver_data
-  #   networks:
-  #     - actinia-dev
 
 networks:
   actinia-dev:

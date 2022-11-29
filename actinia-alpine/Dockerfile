@@ -79,11 +79,6 @@ ARG WHEEL_NAME=actinia_tiling_plugin.wsgi-${PLUGIN_VERSION}-py2.py3-none-any.whl
 RUN curl -L --output /build/${WHEEL_NAME} \
     https://github.com/mundialis/actinia-tiling-plugin/releases/download/${PLUGIN_VERSION}/${WHEEL_NAME}
 
-ARG PLUGIN_VERSION=1.0.0
-ARG WHEEL_NAME=actinia_parallel_plugin.wsgi-${PLUGIN_VERSION}-py2.py3-none-any.whl
-RUN curl -L --output /build/${WHEEL_NAME} \
-    https://github.com/mundialis/actinia-parallel-plugin/releases/download/${PLUGIN_VERSION}/${WHEEL_NAME}
-
 ENV ACTINIA_API_VERSION=3.4.0
 ARG WHEEL_NAME=actinia_api-${ACTINIA_API_VERSION}-py3-none-any.whl
 RUN curl -L --output /build/${WHEEL_NAME} \

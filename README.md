@@ -111,6 +111,8 @@ Then move the `.vscode` folder from this repository one level up and
 open the whole actinia folder as workspace in vscode. This can be done by eg. typing `code $PATH_TO_MY_ACTINIA_CHECKOUTS` in a terminal. Then press `F5` and after a few seconds, a browser window should be opened pointing to the version endpoint. For debugging tips, [read the docs](https://code.visualstudio.com/Docs/editor/debugging#_debug-actions).
 
 ## Local dev-setup for actinia-core with Keycloak
+**<span style="color:red">For deployment change passwords in .env file!</span>**
+
 Add to the `actinia.cfg` the configuration for Keycloak:
 ```
 [KEYCLOAK]
