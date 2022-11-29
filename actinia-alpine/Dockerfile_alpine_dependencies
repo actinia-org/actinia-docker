@@ -11,8 +11,7 @@ ENV ACTINIA_BUILD_PACKAGES="\
 
 ENV ACTINIA_REQUIREMENTS_WHEEL_PACKAGES="\
     cython \
-    py3-gdal \
-    py3-scipy \
+    gdal-tools \
     # following for geopandas
     build-base \
     gdal-dev \
@@ -40,7 +39,7 @@ ENV PDAL_RUNTIME_PACKAGES="\
     libxml2 \
     postgresql \
     python3 \
-    py3-numpy sqlite \
+    sqlite \
     "
 
 # Keep basic packages for simple debugging
@@ -58,11 +57,6 @@ ENV GRASS_RUNTIME_PACKAGES="\
     proj \
     proj-util \
     python3 \
-    py3-dateutil \
-    py3-numpy \
-    py3-pillow \
-    py3-ply \
-    py3-six \
     sqlite \
     sqlite-libs \
     zstd-libs \
@@ -95,8 +89,6 @@ ENV GOOGLE_CLOUD_BIGQUERY_PACKAGES="\
 # (installed du is from busybox)
 ENV ACTINIA_RUNTIME_PACKAGES="\
     coreutils \
-    py3-joblib \
-    py3-scikit-learn \
     rsync \
     zip \
     "
@@ -115,12 +107,21 @@ RUN apk update; \
 
 RUN python3 -m ensurepip && pip3 install --upgrade pip pep517 wheel
 
-# Duplicated in final images, only here to safe time
-RUN curl https://raw.githubusercontent.com/mundialis/actinia_core/main/requirements.txt \
-    > requirements.txt && pip3 install -r requirements.txt && \
-    rm requirements.txt
-
+# Do not sort alphabetically as some depend on others
+ENV ADDITIONAL_PYTHON_PACKAGES="\
+    ply \
+    six \
+    python-dateutil \
+    pillow \
+    scipy \
+    joblib \
+    threadpoolctl \
+    scikit-learn \
+    "
 # Fix for scikit-learn segmentation fault error
 # TODO: check if this can be removed in future
 RUN apk add openblas openblas-dev lapack lapack-dev
-RUN pip3 install --upgrade scikit-learn
+RUN pip3 install --upgrade $ADDITIONAL_PYTHON_PACKAGES
+
+# Duplicated in final images, only here to safe time
+RUN pip3 install -r https://raw.githubusercontent.com/mundialis/actinia_core/main/requirements.txt

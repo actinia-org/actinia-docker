@@ -14,6 +14,7 @@ RUN pip3 uninstall actinia_core -y
 
 COPY actinia-dev/actinia.cfg /etc/default/actinia
 COPY actinia-dev/keycloak.json /etc/default/keycloak.json
+COPY actinia-dev/interim_endpoints.csv /etc/default/actinia_interim_endpoints.csv
 
 WORKDIR /src
 # Even though the code is mounted later, it needs to be installed once
