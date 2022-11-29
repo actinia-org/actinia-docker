@@ -89,9 +89,9 @@ ARG WHEEL_NAME=actinia_api-${ACTINIA_API_VERSION}-py3-none-any.whl
 RUN curl -L --output /build/${WHEEL_NAME} \
     https://github.com/mundialis/actinia-api/releases/download/${ACTINIA_API_VERSION}/${WHEEL_NAME}
 
-# ARG WHEEL_NAME=actinia_core-${ACTINIA_CORE_VERSION}-py2.py3-none-any.whl
-# RUN curl -L --output /build/${WHEEL_NAME} \
-#     https://github.com/mundialis/actinia_core/releases/download/${ACTINIA_CORE_VERSION}/${WHEEL_NAME}
+ARG WHEEL_NAME=actinia_core-${ACTINIA_CORE_VERSION}-py2.py3-none-any.whl
+RUN curl -L --output /build/${WHEEL_NAME} \
+    https://github.com/mundialis/actinia_core/releases/download/${ACTINIA_CORE_VERSION}/${WHEEL_NAME}
 
 # Install actinia-core and plugins
 # Difference to `pip3 install /build/*`: Loop uses already installed
@@ -99,11 +99,9 @@ RUN curl -L --output /build/${WHEEL_NAME} \
 # though older ones are already installed.
 RUN for i in /build/*; do pip3 install $i; done
 
-# # Duplicate install actinia_core requirements. They are already included
-# # in alpine-build / alpine-runtime images, but check for updates here.
-# RUN pip3 install -r https://raw.githubusercontent.com/mundialis/actinia_core/${ACTINIA_CORE_VERSION}/requirements.txt
-RUN (cd /src && git clone https://github.com/mundialis/actinia_core.git && cd actinia_core && git checkout keycloak2 && pip3 install -r requirements.txt && python3 setup.py install)
-
+# Duplicate install actinia_core requirements. They are already included
+# in alpine-build / alpine-runtime images, but check for updates here.
+RUN pip3 install -r https://raw.githubusercontent.com/mundialis/actinia_core/${ACTINIA_CORE_VERSION}/requirements.txt
 
 # Copy actinia config file and start scripts + set needed envs
 COPY actinia-alpine/actinia.cfg /etc/default/actinia
