@@ -201,7 +201,8 @@ See this [README](https://github.com/mundialis/actinia_core/tree/main/docker#tes
 <a id="production-deployment"></a>
 # Production deployment
 
-To run actinia_core in production systems, you can use the docker-compose-prod.yml. Please change before the default redis password in redis_data/config/.redis and inside the actinia.cfg. Also incomment the `build` block in the `docker-compose.yml`.
+To run actinia_core in production systems, you can use the docker-compose-prod.yml. Please change before the default redis password in redis_data/config/.redis and inside the actinia.cfg. Also incomment the `build` block in the `docker-compose.yml`. Additional change the keycloak and postgis passwords in `.env` file.
+
 To start the server, run:
 
 ```
