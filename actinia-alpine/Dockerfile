@@ -12,7 +12,7 @@ ENV GDAL_CACHEMAX=2000
 ENV GRASS_COMPRESSOR=ZSTD
 ENV GRASS_SKIP_MAPSET_OWNER_CHECK 1
 ENV GISBASE ""
-ENV ACTINIA_CORE_VERSION=4.6.0
+ENV ACTINIA_CORE_VERSION=4.6.1
 
 USER root
 
@@ -52,41 +52,42 @@ WORKDIR /build
 ARG PLUGIN_VERSION=0.2.1
 ARG WHEEL_NAME=actinia_statistic_plugin-${PLUGIN_VERSION}-py2.py3-none-any.whl
 RUN curl -L --output /build/${WHEEL_NAME} \
-    https://github.com/mundialis/actinia_statistic_plugin/releases/download/${PLUGIN_VERSION}/${WHEEL_NAME}
+    https://github.com/actinia-org/actinia_statistic_plugin/releases/download/${PLUGIN_VERSION}/${WHEEL_NAME}
 
 ARG PLUGIN_VERSION=0.1.0
 ARG WHEEL_NAME=actinia_satellite_plugin-${PLUGIN_VERSION}-py2.py3-none-any.whl
 RUN curl -L --output /build/${WHEEL_NAME} \
-    https://github.com/mundialis/actinia_satellite_plugin/releases/download/${PLUGIN_VERSION}/${WHEEL_NAME}
+    https://github.com/actinia-org/actinia_satellite_plugin/releases/download/${PLUGIN_VERSION}/${WHEEL_NAME}
 
 ARG PLUGIN_VERSION=1.0.2
 ARG WHEEL_NAME=actinia_metadata_plugin.wsgi-${PLUGIN_VERSION}-py2.py3-none-any.whl
 RUN curl -L --output /build/${WHEEL_NAME} \
-    https://github.com/mundialis/actinia-metadata-plugin/releases/download/${PLUGIN_VERSION}/${WHEEL_NAME}
+    https://github.com/actinia-org/actinia-metadata-plugin/releases/download/${PLUGIN_VERSION}/${WHEEL_NAME}
 
 ARG PLUGIN_VERSION=2.4.1
 ARG WHEEL_NAME=actinia_module_plugin.wsgi-${PLUGIN_VERSION}-py2.py3-none-any.whl
 RUN curl -L --output /build/${WHEEL_NAME} \
-    https://github.com/mundialis/actinia-module-plugin/releases/download/${PLUGIN_VERSION}/${WHEEL_NAME}
+    https://github.com/actinia-org/actinia-module-plugin/releases/download/${PLUGIN_VERSION}/${WHEEL_NAME}
 
 ARG PLUGIN_VERSION=0.1.1
 ARG WHEEL_NAME=actinia_stac_plugin.wsgi-${PLUGIN_VERSION}-py2.py3-none-any.whl
 RUN curl -L --output /build/${WHEEL_NAME} \
-    https://github.com/mundialis/actinia-stac-plugin/releases/download/${PLUGIN_VERSION}/${WHEEL_NAME}
+    https://github.com/actinia-org/actinia-stac-plugin/releases/download/${PLUGIN_VERSION}/${WHEEL_NAME}
 
 ARG PLUGIN_VERSION=1.0.0
 ARG WHEEL_NAME=actinia_tiling_plugin.wsgi-${PLUGIN_VERSION}-py2.py3-none-any.whl
 RUN curl -L --output /build/${WHEEL_NAME} \
-    https://github.com/mundialis/actinia-tiling-plugin/releases/download/${PLUGIN_VERSION}/${WHEEL_NAME}
+    https://github.com/actinia-org/actinia-tiling-plugin/releases/download/${PLUGIN_VERSION}/${WHEEL_NAME}
 
 ENV ACTINIA_API_VERSION=3.4.0
 ARG WHEEL_NAME=actinia_api-${ACTINIA_API_VERSION}-py3-none-any.whl
 RUN curl -L --output /build/${WHEEL_NAME} \
-    https://github.com/mundialis/actinia-api/releases/download/${ACTINIA_API_VERSION}/${WHEEL_NAME}
+    https://github.com/actinia-org/actinia-api/releases/download/${ACTINIA_API_VERSION}/${WHEEL_NAME}
 
-ARG WHEEL_NAME=actinia_core-${ACTINIA_CORE_VERSION}-py2.py3-none-any.whl
+# ARG WHEEL_NAME=actinia_core-${ACTINIA_CORE_VERSION}-py2.py3-none-any.whl
+ARG WHEEL_NAME=actinia_core-0.0.0-py2.py3-none-any.whl
 RUN curl -L --output /build/${WHEEL_NAME} \
-    https://github.com/mundialis/actinia_core/releases/download/${ACTINIA_CORE_VERSION}/${WHEEL_NAME}
+    https://github.com/actinia-org/actinia_core/releases/download/${ACTINIA_CORE_VERSION}/${WHEEL_NAME}
 
 # Install actinia-core and plugins
 # Difference to `pip3 install /build/*`: Loop uses already installed
@@ -96,7 +97,7 @@ RUN for i in /build/*; do pip3 install $i; done
 
 # Duplicate install actinia_core requirements. They are already included
 # in alpine-build / alpine-runtime images, but check for updates here.
-RUN pip3 install -r https://raw.githubusercontent.com/mundialis/actinia_core/${ACTINIA_CORE_VERSION}/requirements.txt
+RUN pip3 install -r https://raw.githubusercontent.com/actinia-org/actinia_core/${ACTINIA_CORE_VERSION}/requirements.txt
 
 # Copy actinia config file and start scripts + set needed envs
 COPY actinia-alpine/actinia.cfg /etc/default/actinia
