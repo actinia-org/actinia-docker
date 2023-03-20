@@ -75,6 +75,12 @@ docker-compose -f docker-compose-dev.yml build
 docker-compose -f docker-compose-dev.yml run --rm --service-ports --entrypoint sh actinia
 
 (cd /src/actinia_core && python3 setup.py install)
+
+# for installing plugins, following two commands have to be executed additionally
+# Note: the second one have to be modified, depending on the module
+export SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0
+git config --global --add safe.directory /src/actinia-module-plugin
+
 (cd /src/actinia-metadata-plugin && python3 setup.py install)
 (cd /src/actinia-module-plugin && python3 setup.py install)
 
