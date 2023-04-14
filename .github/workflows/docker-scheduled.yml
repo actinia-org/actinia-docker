@@ -2,7 +2,7 @@ name: Update alpine actinia dependencies
 on:
   schedule:
   # every 14th at 09UTC
-    - cron: '00 09 14 * *'
+    - cron: '08 11 14 * *'
   workflow_dispatch:
 
 env:
