@@ -22,7 +22,7 @@ jobs:
         run: |
           date=`date -I`
           tag=${DOCKERHUB_REPOSITORY}:alpine-dependencies-$date
-          echo "::set-output name=tags::$tag"
+          echo "tags=$tag" >> $GITHUB_OUTPUT
       - name: log
         run: echo ${{ steps.meta.outputs.tags }}
       - name: Set up QEMU
