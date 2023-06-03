@@ -1,4 +1,4 @@
-FROM alpine:3.15
+FROM alpine:3.18
 
 ENV ACTINIA_BUILD_PACKAGES="\
     gcc \
@@ -31,7 +31,6 @@ ENV PDAL_RUNTIME_PACKAGES="\
     curl \
     jsoncpp \
     laszip \
-    libexecinfo \
     libunwind \
     gdal \
     geos \
@@ -121,7 +120,7 @@ ENV ADDITIONAL_PYTHON_PACKAGES="\
     "
 # Fix for scikit-learn segmentation fault error
 # TODO: check if this can be removed in future
-RUN apk add openblas openblas-dev lapack lapack-dev
+RUN apk add openblas openblas-dev lapack-dev
 RUN pip3 install --upgrade $ADDITIONAL_PYTHON_PACKAGES
 
 # Duplicated in final images, only here to safe time
