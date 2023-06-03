@@ -48,7 +48,7 @@ services:
     -   actinia-dev
 
   postgis:
-    image: postgis/postgis:13-3.2-alpine
+    image: postgis/postgis:14-3.2-alpine
     volumes:
       - ./postgis/postgres_data:/var/lib/postgresql/data
       - ./postgis/init_data/01_init_keycloak.sql:/docker-entrypoint-initdb.d/01_init_keycloak.sql
