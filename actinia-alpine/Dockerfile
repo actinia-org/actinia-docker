@@ -1,3 +1,11 @@
+FROM alpine:3.18 as version
+RUN apk add git
+
+COPY .git /src/actinia-docker/.git
+WORKDIR /src/actinia-docker
+RUN git describe --dirty --tags --long --first-parent > /actinia-docker-version.txt
+
+
 FROM mundialis/actinia:alpine-dependencies-2022-11-18 as base
 FROM mundialis/grass-py3-pdal:releasebranch_8_2-alpine as grass
 FROM mundialis/esa-snap:s1tbx-3885c70 as snap
@@ -15,6 +23,9 @@ ENV GISBASE ""
 ENV ACTINIA_CORE_VERSION=4.8.0
 
 USER root
+
+# Set actinia-docker version
+COPY --from=version /actinia-docker-version.txt /
 
 # ESA SNAP SETUP
 ENV LD_LIBRARY_PATH ".:$LD_LIBRARY_PATH"
