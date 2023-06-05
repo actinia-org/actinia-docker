@@ -1,6 +1,6 @@
-FROM mundialis/actinia:alpine-dependencies-2022-11-18 as base
+FROM mundialis/actinia:alpine-dependencies-2023-06-03 as base
 FROM mundialis/grass-py3-pdal:releasebranch_8_2-alpine as grass
-FROM mundialis/esa-snap:s1tbx-3885c70 as snap
+# FROM mundialis/esa-snap:s1tbx-8c195c8 as snap
 
 FROM base
 
@@ -16,13 +16,13 @@ ENV ACTINIA_CORE_VERSION=4.8.0
 
 USER root
 
-# ESA SNAP SETUP
-ENV LD_LIBRARY_PATH ".:$LD_LIBRARY_PATH"
-COPY --from=snap /root/.snap /root/.snap
-COPY --from=snap /usr/local/snap /usr/local/snap
-RUN (cd /root/.snap/snap-python/snappy && pip3 install .)
-RUN /usr/bin/python3 -c 'from snappy import ProductIO'
-RUN /usr/bin/python3 /root/.snap/about.py
+# # ESA SNAP SETUP
+# ENV LD_LIBRARY_PATH ".:$LD_LIBRARY_PATH"
+# COPY --from=snap /root/.snap /root/.snap
+# COPY --from=snap /usr/local/snap /usr/local/snap
+# RUN (cd /root/.snap/snap-python/snappy && pip3 install .)
+# RUN /usr/bin/python3 -c 'from snappy import ProductIO'
+# RUN /usr/bin/python3 /root/.snap/about.py
 
 # GRASS GIS SETUP
 COPY --from=grass /usr/local/bin/grass /usr/local/bin/grass
