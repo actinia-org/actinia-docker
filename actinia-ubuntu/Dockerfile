@@ -1,8 +1,8 @@
-FROM mundialis/grass-py3-pdal:stable-ubuntu
+FROM osgeo/grass-gis:stable-ubuntu
 
 # based on GRASS GIS releasebranch_8_2 (grass)
-# for latest GRASS GIS 8, change base image to
-# FROM mundialis/grass-py3-pdal:latest-ubuntu
+# for most recent GRASS GIS, change base image to
+# FROM osgeo/grass-gis:latest-ubuntu
 
 LABEL authors="Carmen Tawalika,Anika Weinmann,Markus Neteler,Sören Gebbert"
 LABEL maintainer="tawalika@mundialis.de,weinmann@mundialis.de,neteler@mundialis.de,soerengebbert@gmail.com"
@@ -91,7 +91,7 @@ RUN update-alternatives --remove python /usr/bin/python3
 RUN ln -s /actinia_core /root/actinia
 
 # Install actinia-core
-RUN git clone https://github.com/mundialis/actinia_core.git /src/actinia_core
+RUN git clone https://github.com/actinia-org/actinia-core.git /src/actinia_core
 WORKDIR /src/actinia_core
 RUN python3 -m pip install --user --upgrade setuptools wheel
 RUN python3 setup.py sdist bdist_wheel -d /build
@@ -107,7 +107,7 @@ RUN pip3 install -r requirements_ubuntu19.txt && python3 setup.py install
 # Install actinia-core plugins
 WORKDIR /src
 RUN git config --global http.sslVerify false
-RUN git clone https://github.com/mundialis/actinia_statistic_plugin.git /src/actinia_statistic_plugin
+RUN git clone https://github.com/actinia-org/actinia-statistic-plugin.git /src/actinia_statistic_plugin
 WORKDIR /src/actinia_statistic_plugin
 RUN pip3 install -r requirements.txt && python3 setup.py install
 ## TODO: fix tests

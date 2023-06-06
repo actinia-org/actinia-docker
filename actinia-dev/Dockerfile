@@ -19,7 +19,7 @@ COPY actinia-dev/interim_endpoints.csv /etc/default/actinia_interim_endpoints.cs
 WORKDIR /src
 # Even though the code is mounted later, it needs to be installed once
 RUN rm -rf /src/actinia_core
-RUN git clone https://github.com/mundialis/actinia_core.git /src/actinia_core
+RUN git clone https://github.com/actinia-org/actinia-core.git /src/actinia_core
 
 RUN git config --global --add safe.directory /src/actinia*
 
@@ -29,31 +29,31 @@ RUN pip3 install -e .
 # for actinia plugin development, incomment matching block
 
 # RUN pip3 uninstall actinia_module_plugin.wsgi -y
-# RUN git clone https://github.com/mundialis/actinia-module-plugin.git /src/actinia-module-plugin
+# RUN git clone https://github.com/actinia-org/actinia-module-plugin.git /src/actinia-module-plugin
 # WORKDIR /src/actinia-module-plugin/
 # RUN pip3 install -e .
 
 # RUN pip3 uninstall actinia_stac_plugin.wsgi -y
-# RUN git clone https://github.com/mundialis/actinia-stac-plugin.git /src/actinia-stac-plugin
+# RUN git clone https://github.com/actinia-org/actinia-stac-plugin.git /src/actinia-stac-plugin
 # WORKDIR /src/actinia-stac-plugin/
 # RUN pip3 install -e .
 
 # RUN pip3 uninstall actinia_metadata_plugin.wsgi -y
-# RUN git clone https://github.com/mundialis/actinia-metadata-plugin.git /src/actinia-metadata-plugin
+# RUN git clone https://github.com/actinia-org/actinia-metadata-plugin.git /src/actinia-metadata-plugin
 # WORKDIR /src/actinia-metadata-plugin/
 # RUN pip3 install -e .
 
 # RUN pip3 uninstall actinia_statistic_plugin -y
-# RUN git clone https://github.com/mundialis/actinia_statistic_plugin.git /src/actinia_statistic_plugin
+# RUN git clone https://github.com/actinia-org/actinia-statistic-plugin.git /src/actinia_statistic_plugin
 # WORKDIR /src/actinia_statistic_plugin/
 # RUN pip3 install -e .
 
 # RUN pip3 uninstall actinia_satellite_plugin -y
-# RUN git clone https://github.com/mundialis/actinia_satellite_plugin.git /src/actinia_satellite_plugin
+# RUN git clone https://github.com/actinia-org/actinia-satellite-plugin.git /src/actinia_satellite_plugin
 # WORKDIR /src/actinia_satellite_plugin/
 # RUN pip3 install -e .
 
 # RUN pip3 uninstall actinia_api -y
-# RUN git clone https://github.com/mundialis/actinia-api.git /src/actinia-api
+# RUN git clone https://github.com/actinia-org/actinia-api.git /src/actinia-api
 # WORKDIR /src/actinia-api/
 # RUN pip3 install -e .
