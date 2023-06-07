@@ -5,7 +5,7 @@ Requirements: docker and docker-compose
 To build and deploy actinia, run
 
 ```
-git clone https://github.com/mundialis/actinia-docker.git
+git clone https://github.com/actinia-org/actinia-docker.git
 cd actinia-docker
 docker-compose -f docker-compose.yml up
 ```
@@ -61,7 +61,7 @@ sudo sysctl -w vm.max_map_count=262144
 <a id="local-dev-setup"></a>
 # Local dev-setup with docker
 
-For a dev setup where no actinia plugins are involved, simply follow the [steps explained in actinia-core](https://github.com/mundialis/actinia_core/tree/main/docker#local-dev-setup-with-docker) directly. Instead of from `actinia_core/docker` run the steps from `actinia-docker`.
+For a dev setup where no actinia plugins are involved, simply follow the [steps explained in actinia-core](https://github.com/actinia-org/actinia-core/tree/main/docker#local-dev-setup-with-docker) directly. Instead of from `actinia_core/docker` run the steps from `actinia-docker`.
 
 
 ## Local dev-setup for actinia-core plugins
@@ -127,7 +127,7 @@ group_prefix = /actinia-user/
 ```
 where the `config_path` is the file to the Keycloak OIDC JSON from the actinia client in Keykloak (for the DEV setup it is in `actinia-dev/keycloak.json`).
 
-Then you can start the docker DEV setup as in [local dev-setup with docker](https://github.com/mundialis/actinia_core/tree/main/docker#local-dev-setup-with-docker).
+Then you can start the docker DEV setup as in [local dev-setup with docker](https://github.com/actinia-org/actinia-core/tree/main/docker#local-dev-setup-with-docker).
 ```
 docker-compose -f docker-compose-dev.yml build
 # start first postgis
@@ -202,7 +202,7 @@ curl -H 'Accept: application/json' -H "Authorization: Bearer ${TOKEN}" http://lo
 <a id="grass-gis"></a>
 # Testing GRASS GIS inside a container
 
-See this [README](https://github.com/mundialis/actinia_core/tree/main/docker#testing-grass-gis-inside-a-container) for more information.
+See this [README](https://github.com/actinia-org/actinia-core/tree/main/docker#testing-grass-gis-inside-a-container) for more information.
 
 <a id="production-deployment"></a>
 # Production deployment

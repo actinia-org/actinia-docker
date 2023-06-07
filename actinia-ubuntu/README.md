@@ -2,52 +2,52 @@
 
 A related docker image created and available for download from here:
 
-https://hub.docker.com/r/mundialis/actinia-core
+https://hub.docker.com/r/mundialis/actinia
 
 ## Background info
 
-This docker image is based on https://hub.docker.com/r/mundialis/grass-py3-pdal (tag: stable-ubuntu) which provides GRASS GIS 7.8 (release branch, grass78) with Python3 and PDAL support. For GRASS GIS 8, change base image to grass-py3-pdal:latest-ubuntu which provides GRASS GIS 8 (grass).
+This docker image is based on https://hub.docker.com/r/osgeo/grass-gis (tag: stable-ubuntu) which provides the most recent stable version of GRASS GIS (releasebranch) with Python3 and PDAL support. For most recent version of GRASS GIS, change base image to grass-gis:latest-ubuntu.
 
-The Dockerfile contained in this folder is used to build on Dockerhub.
+The Dockerfile contained in this folder is used to build via pipeline.
 If you want to build manually...
 ## mind the build context!
 
 Clone this repository and change directory:
 
 ```bash
-$ git clone https://github.com/mundialis/actinia_core.git
-$ cd actinia_core
+$ git clone https://github.com/actinia-org/actinia-docker.git
+$ cd actinia-docker
 ```
 
-__Build the docker with__:
+__Build the image with__:
 
 ```bash
 $ docker build \
-         --file docker/actinia-core-ubuntu/Dockerfile \
-         --tag actinia-core:g78-latest-ubuntu .
+         --file actinia-ubuntu/Dockerfile \
+         --tag actinia:latest-ubuntu .
 ```
 
 View the images available using `sudo docker images` and open a bash terminal with:
 
 ```bash
-$ docker run -it --entrypoint=/bin/bash actinia-core:g78-latest-ubuntu
+$ docker run -it --entrypoint=/bin/bash actinia:latest-ubuntu
 root@c5e3b72ad8ba:/grassdb#
 ```
 
 __To build a stable version__:
-
-change to the tag you want to build (only supported from v0.2.3):
+Update the line in the Dockerfile, where actinia-core is cloned and set it
+to a certain version:
 ```bash
-$ git checkout v0.2.3
+git clone --branch 4.8.0 --depth 1 https://github.com/actinia-org/actinia-core.git
 ```
 
-and build and enter with:
+then build and enter with:
 
 ```bash
 $ docker build \
-        --file docker/actinia-core/Dockerfile \
-        --tag actinia-core:0.2.3 .
+        --file actinia-ubuntu/Dockerfile \
+        --tag actinia-core:4.8.0 .
 
-$ docker run -it --entrypoint=/bin/bash actinia-core:0.2.3
+$ docker run -it --entrypoint=/bin/bash actinia-core:4.8.0
 root@c5e3b72ad8ba:/grassdb#
 ```
