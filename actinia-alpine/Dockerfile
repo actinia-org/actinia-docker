@@ -96,9 +96,9 @@ RUN curl -L --output /build/${WHEEL_NAME} \
     https://github.com/actinia-org/actinia-api/releases/download/${ACTINIA_API_VERSION}/${WHEEL_NAME}
 
 # ARG WHEEL_NAME=actinia_core-${ACTINIA_CORE_VERSION}-py2.py3-none-any.whl
-ARG WHEEL_NAME=actinia_core-0.0.0-py2.py3-none-any.whl
+ARG WHEEL_NAME=actinia_core-${ACTINIA_CORE_VERSION}-py3-none-any.whl
 RUN curl -L --output /build/${WHEEL_NAME} \
-    https://github.com/actinia-org/actinia_core/releases/download/${ACTINIA_CORE_VERSION}/${WHEEL_NAME}
+    https://github.com/actinia-org/actinia-core/releases/download/${ACTINIA_CORE_VERSION}/${WHEEL_NAME}
 
 # Install actinia-core and plugins
 # Difference to `pip3 install /build/*`: Loop uses already installed
