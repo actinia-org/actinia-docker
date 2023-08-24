@@ -116,7 +116,7 @@ ENV ADDITIONAL_PYTHON_PACKAGES="\
     joblib \
     threadpoolctl \
     scikit-learn \
-    pyproj>2.6.1,<3.5 \
+    pyproj@git+https://github.com/pyproj4/pyproj.git@main \
     "
 # Fix for scikit-learn segmentation fault error
 # TODO: check if this can be removed in future
