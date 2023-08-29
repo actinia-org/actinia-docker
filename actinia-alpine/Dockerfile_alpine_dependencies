@@ -48,6 +48,11 @@ ENV GRASS_RUNTIME_PACKAGES="\
     fftw \
     flex \
     gdal \
+    gdal-driver-HDF5 \
+    gdal-driver-JP2OpenJPEG \
+    gdal-driver-netCDF \
+    gdal-driver-PG \
+    gdal-driver-WMS \
     geos \
     libpng \
     openjpeg \
