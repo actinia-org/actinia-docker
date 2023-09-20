@@ -14,7 +14,7 @@ Steps when releasing actinia-docker:
 * Fill in tag and release title with this version
 * At the bottom of the release, add
   "generated with `gh api repos/actinia-org/actinia-docker/releases/generate-notes -f tag_name="$ESTIMATED_VERSION" -f target_commitish=main -q .body`" and replace `$ESTIMATED_VERSION` with the actual version.
-* make sure that the checkbox for "Set as the latest release" is checked so that this version appears on the main github repo page
+* Make sure that the checkbox for "Set as the latest release" is checked so that this version appears on the main github repo page
 * Now you can save the release
 
 ## Outcome:
