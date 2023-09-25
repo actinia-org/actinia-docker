@@ -1,4 +1,4 @@
-FROM FROM osgeo/grass-gis:stable-ubuntu as grass
+FROM osgeo/grass-gis:stable-ubuntu as grass
 
 # based on GRASS GIS releasebranch_8_2 (grass)
 # for most recent GRASS GIS, change base image to
