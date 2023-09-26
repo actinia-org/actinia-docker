@@ -24,6 +24,8 @@ RUN apt-get update && apt-get upgrade -y && \
     git \
     language-pack-en-base \
     libcurl4-gnutls-dev \
+    libmagic1 \
+    libmagic-mgc \
     moreutils \
     openjdk-11-jre \
     redis-server \
@@ -95,11 +97,19 @@ RUN mkdir /src/site-packages \
     && python3 -m pip install \
        --cache-dir /src/pip_cache \
        -r requirements.txt \
-     && python3 -m pip install \
+    && python3 -m pip install \
        --cache-dir /src/pip_cache \
        -r requirements.txt \
-       -r requirements_ubuntu22.txt
+       -r requirements_ubuntu22.txt \
+    && rm -rf /tmp/pip-*
 
+FROM grass as actinia
+
+COPY --from=build /usr/local/snap /usr/local/snap
+COPY --from=build /src/grass_addons /usr/local/grass
+COPY --from=build /root/.snap /root/.snap
+COPY --from=build /usr/local/lib/python3.10/ /usr/local/lib/python3.10/
+COPY --from=build /usr/local/bin/ /usr/local/bin
 
 RUN mkdir /src/build && \
     PLUGIN_VERSION=0.2.1; WHEEL_NAME=actinia_statistic_plugin-${PLUGIN_VERSION}-py2.py3-none-any.whl; \
@@ -136,13 +146,6 @@ RUN mkdir /src/build && \
 RUN python3 -m pip install \
     --cache-dir /src/pip_cache \
     Cython cython-setuptools setuptools_cython
-
-FROM grass as actinia
-
-COPY --from=build /usr/local/snap /usr/local/snap
-COPY --from=build /src/grass_addons /usr/local/grass
-COPY --from=build /root/.snap /root/.snap
-COPY --from=build /usr/local/lib/python3.10/ /usr/local/lib/python3.10/
 
 # Data directory
 WORKDIR /grassdb
