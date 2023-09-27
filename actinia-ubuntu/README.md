@@ -6,7 +6,8 @@ https://hub.docker.com/r/mundialis/actinia
 
 ## Background info
 
-This docker image is based on https://hub.docker.com/r/osgeo/grass-gis (tag: stable-ubuntu) which provides the most recent stable version of GRASS GIS (releasebranch) with Python3 and PDAL support. For most recent version of GRASS GIS, change base image to grass-gis:latest-ubuntu.
+This docker image is based on https://hub.docker.com/r/osgeo/grass-gis (tag: current-ubuntu) which provides the most recent stable version of GRASS GIS (releasebranch) with Python3 and PDAL support. For most recent version of GRASS GIS, change base image to grass-gis:main-ubuntu.
+This can be done using the build argument `--build-arg="GRASS_VERSION=main"` (see below)
 
 The Dockerfile contained in this folder is used to build via pipeline.
 If you want to build manually...
@@ -23,6 +24,15 @@ __Build the image with__:
 
 ```bash
 $ docker build \
+         --file actinia-ubuntu/Dockerfile \
+         --tag actinia:latest-ubuntu .
+```
+
+In order to build an image based on the GRASS GIS development version run:
+
+```bash
+$ docker build \
+         --build-arg="GRASS_VERSION=main" \
          --file actinia-ubuntu/Dockerfile \
          --tag actinia:latest-ubuntu .
 ```
