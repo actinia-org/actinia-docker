@@ -1,8 +1,8 @@
-FROM osgeo/grass-gis:stable-ubuntu
+FROM osgeo/grass-gis:current-ubuntu
 
-# based on GRASS GIS releasebranch_8_2 (grass)
+# based on GRASS GIS releasebranch_8_3 (grass)
 # for most recent GRASS GIS, change base image to
-# FROM osgeo/grass-gis:latest-ubuntu
+# FROM osgeo/grass-gis:main-ubuntu
 
 LABEL authors="Carmen Tawalika,Anika Weinmann,Markus Neteler,Sören Gebbert"
 LABEL maintainer="tawalika@mundialis.de,weinmann@mundialis.de,neteler@mundialis.de,soerengebbert@gmail.com"
