@@ -99,7 +99,7 @@ RUN pip3 install /build/*
 
 ## install (Cython must be installed before requirements.txt)
 #RUN pip3 install Cython cython-setuptools setuptools_cython
-RUN pip3 install -r requirements_ubuntu19.txt && python3 setup.py install
+RUN pip3 install scikit-learn && pip3 install .
 ## TODO: fix tests
 #\
 #    && python3 setup.py test
@@ -109,7 +109,7 @@ WORKDIR /src
 RUN git config --global http.sslVerify false
 RUN git clone https://github.com/actinia-org/actinia-statistic-plugin.git /src/actinia_statistic_plugin
 WORKDIR /src/actinia_statistic_plugin
-RUN pip3 install -r requirements.txt && python3 setup.py install
+RUN pip3 install -r requirements.txt && pip3 install .
 ## TODO: fix tests
 #\
 #    && python3 setup.py test
