@@ -5,9 +5,9 @@ COPY .git /src/actinia-docker/.git
 WORKDIR /src/actinia-docker
 RUN git describe --dirty --tags --long --first-parent > /actinia-docker-version.txt
 
-FROM mundialis/actinia:alpine-dependencies-2023-11-02 as base
+FROM actinia:alpine-dependencies as base
 FROM osgeo/grass-gis:releasebranch_8_3-alpine as grass
-# FROM mundialis/esa-snap:s1tbx-8c195c8 as snap
+FROM esa-snap_no_snappy_test as snap
 
 FROM base
 
@@ -27,12 +27,16 @@ USER root
 COPY --from=version /actinia-docker-version.txt /
 
 # # ESA SNAP SETUP
-# ENV LD_LIBRARY_PATH ".:$LD_LIBRARY_PATH"
-# COPY --from=snap /root/.snap /root/.snap
-# COPY --from=snap /usr/local/snap /usr/local/snap
+ENV LD_LIBRARY_PATH ".:$LD_LIBRARY_PATH"
+COPY --from=snap /root/.snap /root/.snap
+COPY --from=snap /usr/local/snap /usr/local/snap
 # RUN (cd /root/.snap/snap-python/snappy && pip3 install .)
 # RUN /usr/bin/python3 -c 'from snappy import ProductIO'
 # RUN /usr/bin/python3 /root/.snap/about.py
+# add gpt to PATH
+ENV PATH="${PATH}:/usr/local/snap/bin"
+# test gpt
+RUN gpt -h
 
 # GRASS GIS SETUP
 COPY --from=grass /usr/local/bin/grass /usr/local/bin/grass
