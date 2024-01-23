@@ -41,6 +41,9 @@ RUN gpt -h
 # GRASS GIS SETUP
 COPY --from=grass /usr/local/bin/grass /usr/local/bin/grass
 COPY --from=grass /usr/local/grass* /usr/local/grass/
+# COPY --from=grass /usr/lib/gdalplugins/*_GRASS* /usr/lib/gdalplugins/
+COPY --from=grass /usr/local/grass/etc/proj/ /etc/proj/
+COPY --from=grass /usr/local/grass/etc/colors/ /etc/colors/
 RUN pip3 install --upgrade pip six grass-session --ignore-installed six
 RUN ln -s /usr/local/grass `grass --config path`
 RUN grass --tmp-location EPSG:4326 --exec g.version -rge && \
@@ -129,6 +132,12 @@ RUN mkdir -p /actinia_core/grassdb && \
 
 VOLUME /grassdb
 WORKDIR /src/actinia_core
+
+RUN mkdir -p /usr/lib/gdalplugins
+RUN git clone https://github.com/OSGeo/gdal-grass.git
+RUN cd gdal-grass && ./configure --with-gdal=/usr/bin/gdal-config --with-grass=/usr/local/grass83 \
+&& make && make install
+RUN cd .. && rm -rf gdal-grass
 
 ENTRYPOINT ["/bin/sh"]
 CMD ["/src/start.sh"]
