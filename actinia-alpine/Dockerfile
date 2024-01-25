@@ -30,9 +30,11 @@ COPY --from=version /actinia-docker-version.txt /
 ENV LD_LIBRARY_PATH ".:$LD_LIBRARY_PATH"
 COPY --from=snap /root/.snap /root/.snap
 COPY --from=snap /usr/local/snap /usr/local/snap
+# commenting out snappy configuration:
 # RUN (cd /root/.snap/snap-python/snappy && pip3 install .)
 # RUN /usr/bin/python3 -c 'from snappy import ProductIO'
 # RUN /usr/bin/python3 /root/.snap/about.py
+# using gpt (graph processing tool) instead:
 # add gpt to PATH
 ENV PATH="${PATH}:/usr/local/snap/bin"
 # test gpt
@@ -53,6 +55,7 @@ RUN grass --tmp-location EPSG:4326 --exec g.version -rge && \
 # GRASS GIS addons installation
 # git clone various openEO plugins (local checkout due to non-standard repo structure)
 RUN git clone https://github.com/mundialis/openeo-addons.git /src/openeo-addons
+RUN git clone https://github.com/NVE/actinia_modules_nve.git /src/nve-addons
 
 # TODO: Fix requirements installation for openeo-udf, needed by t.rast.udf.
 # RUN git clone https://github.com/Open-EO/openeo-udf.git /src/openeo-udf
@@ -133,6 +136,7 @@ RUN mkdir -p /actinia_core/grassdb && \
 VOLUME /grassdb
 WORKDIR /src/actinia_core
 
+# install GDAL GRASS plugin (required for i.sentinel1.pyrosargeocode)
 RUN mkdir -p /usr/lib/gdalplugins
 RUN git clone https://github.com/OSGeo/gdal-grass.git
 RUN cd gdal-grass && ./configure --with-gdal=/usr/bin/gdal-config --with-grass=/usr/local/grass83 \

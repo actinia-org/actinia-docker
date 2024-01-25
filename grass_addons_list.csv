@@ -37,5 +37,4 @@ t.rast.resample,/src/openeo-addons/t.rast.resample
 # t.rast.udf,/src/openeo-addons/t.rast.udf
 t.rast2strds,/src/openeo-addons/t.rast2strds
 v.in.geojson,/src/openeo-addons/v.in.geojson
-# todo: how to add -o to g.extension?
-i.sentinel1.pyrosargeocode,https://github.com/NVE/actinia_modules_nve
+i.sentinel1.pyrosargeocode,/src/nve-addons/src/imagery/i.sentinel1.pyrosargeocode
