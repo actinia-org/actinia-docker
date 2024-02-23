@@ -4,7 +4,7 @@ services:
   actinia:
     # build:
       # context: actinia-prod/
-    image: mundialis/actinia:2.6.6
+    image: mundialis/actinia:2.6.7
     volumes:
       - ./actinia-data/grassdb:/actinia_core/grassdb:Z
       - ./actinia-data/userdata:/actinia_core/userdata
