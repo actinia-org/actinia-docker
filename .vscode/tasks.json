@@ -15,7 +15,7 @@
 		{
 			"label": "start-redis",
 			"type": "shell",
-			"command": "docker-compose -f actinia-docker/docker-compose-dev.yml up -d redis",
+			"command": "docker-compose -f actinia-docker/docker-compose-dev.yml up -d --force-recreate redis",
 			"isBackground": true,
 		},
 		{
@@ -53,7 +53,7 @@
 					// mount local source code for instant reload
 					// on changes
 					{
-				    	"localPath": "${workspaceFolder}/actinia_core",
+				        "localPath": "${workspaceFolder}/actinia-core",
 					    "containerPath": "/src/actinia_core",
 					    "permissions": "rw"
 				    },
@@ -92,35 +92,35 @@
 				    },
 					// mount plugin code on-demand
 					// {
-				    // 	"localPath": "${workspaceFolder}/actinia-module-plugin/",
+					// 	"localPath": "${workspaceFolder}/actinia-module-plugin/",
 					//     "containerPath": "/src/actinia-module-plugin/",
 					//     "permissions": "rw"
-				    // },
+					// },
 					// {
-				    // 	"localPath": "${workspaceFolder}/actinia-metadata-plugin/",
+					// 	"localPath": "${workspaceFolder}/actinia-metadata-plugin/",
 					//     "containerPath": "/src/actinia-metadata-plugin/",
 					//     "permissions": "rw"
-				    // },
+					// },
 					// {
-				    // 	"localPath": "${workspaceFolder}/actinia-stac-plugin/",
+					// 	"localPath": "${workspaceFolder}/actinia-stac-plugin/",
 					//     "containerPath": "/src/actinia-stac-plugin/",
 					//     "permissions": "rw"
-				    // },
+					// },
 					// {
-				    // 	"localPath": "${workspaceFolder}/actinia_statistic_plugin/",
+					// 	"localPath": "${workspaceFolder}/actinia-statistic-plugin/",
 					//     "containerPath": "/src/actinia_statistic_plugin/",
 					//     "permissions": "rw"
-				    // },
+					// },
 					// {
-				    // 	"localPath": "${workspaceFolder}/actinia_satellite_plugin/",
+					// 	"localPath": "${workspaceFolder}/actinia-satellite-plugin/",
 					//     "containerPath": "/src/actinia_satellite_plugin/",
 					//     "permissions": "rw"
-				    // },
+					// },
 					// {
-				    // 	"localPath": "${workspaceFolder}/actinia-api/",
+					// 	"localPath": "${workspaceFolder}/actinia-api/",
 					//     "containerPath": "/src/actinia-api/",
 					//     "permissions": "rw"
-				    // }
+					// }
 				]
 			}
 		}
