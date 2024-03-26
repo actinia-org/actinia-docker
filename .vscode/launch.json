@@ -8,7 +8,7 @@
             "python": {
                 "pathMappings": [
                     {
-                        "localRoot": "${workspaceFolder}/actinia_core",
+                        "localRoot": "${workspaceFolder}/actinia-core",
                         "remoteRoot": "/src/actinia_core"
                     }
                 ],
