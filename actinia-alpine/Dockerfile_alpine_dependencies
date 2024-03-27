@@ -122,6 +122,7 @@ ENV ADDITIONAL_PYTHON_PACKAGES="\
     threadpoolctl \
     scikit-learn \
     pyproj>=3.6.1 \
+    pyroSAR \
     "
 # Fix for scikit-learn segmentation fault error
 # TODO: check if this can be removed in future
