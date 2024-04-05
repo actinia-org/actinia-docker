@@ -22,24 +22,24 @@ services:
     ports:
       - "8088:8088"
     depends_on:
-      - redis
+      - keydb
     cap_add:
       - SYS_PTRACE
     networks:
     -   actinia-dev
 
-  redis:
-    image: redis:5.0.4-alpine
+  keydb:
+    image: keydb:alpine_x86_64_v6.3.4
     volumes:
-      - ./redis_data:/data
+      - ./keydb_data:/data
     environment:
-      - REDIS_PASS_FILE=/data/config/.redis
+      - KEYDB_PASS_FILE=/data/config/.keydb
     command: [
       "sh", "-c",
       '
       docker-entrypoint.sh
-      "/data/config/redis.conf"
-      --requirepass "$$(cat $$REDIS_PASS_FILE)"
+      "/data/config/keydb.conf"
+      --requirepass "$$(cat $$KEYDB_PASS_FILE)"
       '
     ]
     ports:
@@ -81,7 +81,7 @@ services:
     -   actinia-dev
 
 networks:
-  actinia-dev:
+  actinia-dev2:
     ipam:
       config:
         - subnet: 172.18.0.0/16
