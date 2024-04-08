@@ -7,7 +7,7 @@ RUN git describe --dirty --tags --long --first-parent > /actinia-docker-version.
 
 FROM actinia:alpine-dependencies as base
 FROM osgeo/grass-gis:releasebranch_8_3-alpine as grass
-FROM esa-snap_no_snappy_test as snap
+FROM mundialis/esa-snap:s1tbx-c149a5b
 
 FROM base
 
@@ -30,10 +30,6 @@ COPY --from=version /actinia-docker-version.txt /
 ENV LD_LIBRARY_PATH ".:$LD_LIBRARY_PATH"
 COPY --from=snap /root/.snap /root/.snap
 COPY --from=snap /usr/local/snap /usr/local/snap
-# commenting out snappy configuration:
-# RUN (cd /root/.snap/snap-python/snappy && pip3 install .)
-# RUN /usr/bin/python3 -c 'from snappy import ProductIO'
-# RUN /usr/bin/python3 /root/.snap/about.py
 # using gpt (graph processing tool) instead:
 # add gpt to PATH
 ENV PATH="${PATH}:/usr/local/snap/bin"
