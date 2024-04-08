@@ -7,7 +7,7 @@ RUN git describe --dirty --tags --long --first-parent > /actinia-docker-version.
 
 FROM actinia:alpine-dependencies as base
 FROM osgeo/grass-gis:releasebranch_8_3-alpine as grass
-FROM mundialis/esa-snap:s1tbx-c149a5b
+FROM mundialis/esa-snap:s1tbx-c149a5b as snap
 
 FROM base
 
