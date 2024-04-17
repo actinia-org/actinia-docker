@@ -5,7 +5,7 @@ COPY .git /src/actinia-docker/.git
 WORKDIR /src/actinia-docker
 RUN git describe --dirty --tags --long --first-parent > /actinia-docker-version.txt
 
-FROM actinia:alpine-dependencies as base
+FROM mundialis/actinia:alpine-dependencies-2024-04-17 as base
 FROM osgeo/grass-gis:releasebranch_8_3-alpine as grass
 FROM mundialis/esa-snap:s1tbx-c149a5b as snap
 
