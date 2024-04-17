@@ -5,9 +5,9 @@ COPY .git /src/actinia-docker/.git
 WORKDIR /src/actinia-docker
 RUN git describe --dirty --tags --long --first-parent > /actinia-docker-version.txt
 
-FROM mundialis/actinia:alpine-dependencies-2023-11-02 as base
+FROM mundialis/actinia:alpine-dependencies-2024-04-17 as base
 FROM osgeo/grass-gis:releasebranch_8_3-alpine as grass
-# FROM mundialis/esa-snap:s1tbx-8c195c8 as snap
+FROM mundialis/esa-snap:s1tbx-c149a5b as snap
 
 FROM base
 
@@ -27,16 +27,21 @@ USER root
 COPY --from=version /actinia-docker-version.txt /
 
 # # ESA SNAP SETUP
-# ENV LD_LIBRARY_PATH ".:$LD_LIBRARY_PATH"
-# COPY --from=snap /root/.snap /root/.snap
-# COPY --from=snap /usr/local/snap /usr/local/snap
-# RUN (cd /root/.snap/snap-python/snappy && pip3 install .)
-# RUN /usr/bin/python3 -c 'from snappy import ProductIO'
-# RUN /usr/bin/python3 /root/.snap/about.py
+ENV LD_LIBRARY_PATH ".:$LD_LIBRARY_PATH"
+COPY --from=snap /root/.snap /root/.snap
+COPY --from=snap /usr/local/snap /usr/local/snap
+# using gpt (graph processing tool) instead:
+# add gpt to PATH
+ENV PATH="${PATH}:/usr/local/snap/bin"
+# test gpt
+RUN gpt -h
 
 # GRASS GIS SETUP
 COPY --from=grass /usr/local/bin/grass /usr/local/bin/grass
 COPY --from=grass /usr/local/grass* /usr/local/grass/
+# COPY --from=grass /usr/lib/gdalplugins/*_GRASS* /usr/lib/gdalplugins/
+COPY --from=grass /usr/local/grass/etc/proj/ /etc/proj/
+COPY --from=grass /usr/local/grass/etc/colors/ /etc/colors/
 RUN pip3 install --upgrade pip six grass-session --ignore-installed six
 RUN ln -s /usr/local/grass `grass --config path`
 RUN grass --tmp-location EPSG:4326 --exec g.version -rge && \
@@ -46,6 +51,7 @@ RUN grass --tmp-location EPSG:4326 --exec g.version -rge && \
 # GRASS GIS addons installation
 # git clone various openEO plugins (local checkout due to non-standard repo structure)
 RUN git clone https://github.com/mundialis/openeo-addons.git /src/openeo-addons
+RUN git clone https://github.com/NVE/actinia_modules_nve.git /src/nve-addons
 
 # TODO: Fix requirements installation for openeo-udf, needed by t.rast.udf.
 # RUN git clone https://github.com/Open-EO/openeo-udf.git /src/openeo-udf
@@ -125,6 +131,13 @@ RUN mkdir -p /actinia_core/grassdb && \
 
 VOLUME /grassdb
 WORKDIR /src/actinia_core
+
+# install GDAL GRASS plugin (required for i.sentinel1.pyrosargeocode)
+RUN mkdir -p /usr/lib/gdalplugins
+RUN git clone https://github.com/OSGeo/gdal-grass.git
+RUN cd gdal-grass && ./configure --with-gdal=/usr/bin/gdal-config --with-grass=/usr/local/grass83 \
+&& make && make install
+RUN cd .. && rm -rf gdal-grass
 
 ENTRYPOINT ["/bin/sh"]
 CMD ["/src/start.sh"]
