@@ -29,7 +29,7 @@ services:
     -   actinia-dev
 
   redis:
-    image: redis:5.0.4-alpine
+    image: redis:5.0.14-alpine
     volumes:
       - ./redis_data:/data
     environment:
