@@ -27,14 +27,14 @@ USER root
 COPY --from=version /actinia-docker-version.txt /
 
 # # ESA SNAP SETUP
-ENV LD_LIBRARY_PATH ".:$LD_LIBRARY_PATH"
-COPY --from=snap /root/.snap /root/.snap
-COPY --from=snap /usr/local/snap /usr/local/snap
-# using gpt (graph processing tool) instead:
-# add gpt to PATH
-ENV PATH="${PATH}:/usr/local/snap/bin"
-# test gpt
-RUN gpt -h
+# ENV LD_LIBRARY_PATH ".:$LD_LIBRARY_PATH"
+# COPY --from=snap /root/.snap /root/.snap
+# COPY --from=snap /usr/local/snap /usr/local/snap
+# # using gpt (graph processing tool) instead:
+# # add gpt to PATH
+# ENV PATH="${PATH}:/usr/local/snap/bin"
+# # test gpt
+# RUN gpt -h
 
 # GRASS GIS SETUP
 COPY --from=grass /usr/local/bin/grass /usr/local/bin/grass
