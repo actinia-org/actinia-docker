@@ -1,13 +1,13 @@
-FROM alpine:3.18 as version
+FROM alpine:3.20 as version
 RUN apk add git
 
 COPY .git /src/actinia-docker/.git
 WORKDIR /src/actinia-docker
 RUN git describe --dirty --tags --long --first-parent > /actinia-docker-version.txt
 
-FROM mundialis/actinia:alpine-dependencies-2024-05-24 as base
-FROM osgeo/grass-gis:releasebranch_8_3-alpine as grass
-FROM mundialis/esa-snap:s1tbx-c149a5b as snap
+FROM actinia:alpine-dependencies-20240614 as base
+FROM grass-gis:alpine-3.20 as grass
+FROM esa-snap:s1tbx-alpine3.20 as snap
 
 FROM base
 
@@ -135,7 +135,7 @@ WORKDIR /src/actinia_core
 # install GDAL GRASS plugin (required for i.sentinel1.pyrosargeocode)
 RUN mkdir -p /usr/lib/gdalplugins
 RUN git clone https://github.com/OSGeo/gdal-grass.git
-RUN cd gdal-grass && ./configure --with-gdal=/usr/bin/gdal-config --with-grass=/usr/local/grass83 \
+RUN cd gdal-grass && ./configure --with-gdal=/usr/bin/gdal-config --with-grass=/usr/local/grass84 \
 && make && make install
 RUN cd .. && rm -rf gdal-grass
 

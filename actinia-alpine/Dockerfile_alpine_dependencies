@@ -1,4 +1,4 @@
-FROM alpine:3.18
+FROM alpine:3.20
 
 ENV ACTINIA_BUILD_PACKAGES="\
     gcc \
@@ -24,7 +24,7 @@ ENV ACTINIA_REQUIREMENTS_WHEEL_PACKAGES="\
 
 ENV SNAPPY_RUNTIME_PACKAGES="\
     python3 \
-    openjdk8 \
+    openjdk11 \
     "
 
 ENV PDAL_RUNTIME_PACKAGES="\
@@ -109,7 +109,9 @@ RUN apk update; \
         $GOOGLE_CLOUD_BIGQUERY_PACKAGES \
         $ACTINIA_RUNTIME_PACKAGES
 
-RUN python3 -m ensurepip && pip3 install --upgrade pip pep517 wheel
+ENV PATH="/opt/venv/bin:$PATH"
+RUN /usr/bin/python -m venv --system-site-packages --without-pip /opt/venv
+RUN python -m ensurepip && pip3 install --upgrade pip pep517 wheel
 
 # Do not sort alphabetically as some depend on others
 ENV ADDITIONAL_PYTHON_PACKAGES="\
@@ -126,7 +128,7 @@ ENV ADDITIONAL_PYTHON_PACKAGES="\
     "
 # Fix for scikit-learn segmentation fault error
 # TODO: check if this can be removed in future
-RUN apk add openblas openblas-dev lapack-dev
+# RUN apk add openblas openblas-dev lapack-dev
 RUN pip3 install --upgrade $ADDITIONAL_PYTHON_PACKAGES
 
 # Duplicated in final images, only here to safe time
