@@ -5,9 +5,9 @@ COPY .git /src/actinia-docker/.git
 WORKDIR /src/actinia-docker
 RUN git describe --dirty --tags --long --first-parent > /actinia-docker-version.txt
 
-FROM actinia:alpine-dependencies-20240614 as base
-FROM grass-gis:alpine-3.20 as grass
-FROM esa-snap:s1tbx-alpine3.20 as snap
+FROM actinia:alpine-dependencies-20240618 as base
+FROM osgeo/grass-gis:releasebranch_8_4-alpine as grass
+FROM mundialis/esa-snap:s1tbx-543d1be as snap
 
 FROM base
 
@@ -44,7 +44,7 @@ COPY --from=grass /usr/local/grass/etc/proj/ /etc/proj/
 COPY --from=grass /usr/local/grass/etc/colors/ /etc/colors/
 RUN pip3 install --upgrade pip six grass-session --ignore-installed six
 RUN ln -s /usr/local/grass `grass --config path`
-RUN grass --tmp-location EPSG:4326 --exec g.version -rge && \
+RUN grass --tmp-project EPSG:4326 --exec g.version -rge && \
     pdal --version && \
     python3 --version
 
@@ -60,7 +60,7 @@ RUN git clone https://github.com/NVE/actinia_modules_nve.git /src/nve-addons
 
 COPY grass_addons_list.csv /src/grass_addons_list.csv
 
-RUN while IFS=, read -r ADDON SERVER; do if [[ $ADDON != "#*" ]]; then unset URL; test -z $SERVER || URL="url=$SERVER"; grass --tmp-location EPSG:4326 --exec g.extension -s extension=$ADDON $URL;fi;done < /src/grass_addons_list.csv
+RUN while IFS=, read -r ADDON SERVER; do if [[ $ADDON != "#*" ]]; then unset URL; test -z $SERVER || URL="url=$SERVER"; grass --tmp-project EPSG:4326 --exec g.extension -s extension=$ADDON $URL;fi;done < /src/grass_addons_list.csv
 
 # actinia-core and plugins installation
 WORKDIR /build
@@ -95,7 +95,7 @@ ARG WHEEL_NAME=actinia_tiling_plugin.wsgi-${PLUGIN_VERSION}-py2.py3-none-any.whl
 RUN curl -L --output /build/${WHEEL_NAME} \
     https://github.com/actinia-org/actinia-tiling-plugin/releases/download/${PLUGIN_VERSION}/${WHEEL_NAME}
 
-ENV ACTINIA_API_VERSION=3.4.0
+ENV ACTINIA_API_VERSION=3.4.1
 ARG WHEEL_NAME=actinia_api-${ACTINIA_API_VERSION}-py3-none-any.whl
 RUN curl -L --output /build/${WHEEL_NAME} \
     https://github.com/actinia-org/actinia-api/releases/download/${ACTINIA_API_VERSION}/${WHEEL_NAME}
@@ -111,9 +111,6 @@ RUN curl -L --output /build/${WHEEL_NAME} \
 # though older ones are already installed.
 RUN for i in /build/*; do pip3 install $i; done
 
-# Duplicate install actinia_core requirements. They are already included
-# in alpine-build / alpine-runtime images, but check for updates here.
-RUN pip3 install -r https://raw.githubusercontent.com/actinia-org/actinia_core/${ACTINIA_CORE_VERSION}/requirements.txt
 
 # Copy actinia config file and start scripts + set needed envs
 COPY actinia-alpine/actinia.cfg /etc/default/actinia

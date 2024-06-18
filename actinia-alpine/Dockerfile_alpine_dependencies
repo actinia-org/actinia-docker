@@ -131,5 +131,6 @@ ENV ADDITIONAL_PYTHON_PACKAGES="\
 # RUN apk add openblas openblas-dev lapack-dev
 RUN pip3 install --upgrade $ADDITIONAL_PYTHON_PACKAGES
 
+# Install actinia dependencies
 # Duplicated in final images, only here to safe time
-RUN pip3 install -r https://raw.githubusercontent.com/actinia-org/actinia_core/main/requirements.txt
+RUN pip3 install actinia-core && pip3 uninstall actinia-core -y
