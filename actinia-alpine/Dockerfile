@@ -111,10 +111,6 @@ RUN curl -L --output /build/${WHEEL_NAME} \
 # though older ones are already installed.
 RUN for i in /build/*; do pip3 install $i; done
 
-# Duplicate install actinia_core requirements. They are already included
-# in alpine-build / alpine-runtime images, but check for updates here.
-RUN pip3 install -r https://raw.githubusercontent.com/actinia-org/actinia_core/${ACTINIA_CORE_VERSION}/requirements.txt
-
 # Copy actinia config file and start scripts + set needed envs
 COPY actinia-alpine/actinia.cfg /etc/default/actinia
 COPY actinia-alpine/start.sh /src/start.sh
