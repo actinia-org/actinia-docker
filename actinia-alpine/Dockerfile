@@ -19,7 +19,7 @@ ENV GDAL_CACHEMAX=2000
 ENV GRASS_COMPRESSOR=ZSTD
 ENV GRASS_SKIP_MAPSET_OWNER_CHECK 1
 ENV GISBASE ""
-ENV ACTINIA_CORE_VERSION=4.14.0
+ENV ACTINIA_CORE_VERSION=4.14.1
 
 USER root
 
@@ -65,17 +65,17 @@ RUN while IFS=, read -r ADDON SERVER; do if [[ $ADDON != "#*" ]]; then unset URL
 # actinia-core and plugins installation
 WORKDIR /build
 
-ARG PLUGIN_VERSION=0.2.1
+ARG PLUGIN_VERSION=0.2.2
 ARG WHEEL_NAME=actinia_statistic_plugin-${PLUGIN_VERSION}-py2.py3-none-any.whl
 RUN curl -L --output /build/${WHEEL_NAME} \
     https://github.com/actinia-org/actinia_statistic_plugin/releases/download/${PLUGIN_VERSION}/${WHEEL_NAME}
 
-ARG PLUGIN_VERSION=0.1.0
+ARG PLUGIN_VERSION=0.1.2
 ARG WHEEL_NAME=actinia_satellite_plugin-${PLUGIN_VERSION}-py2.py3-none-any.whl
 RUN curl -L --output /build/${WHEEL_NAME} \
     https://github.com/actinia-org/actinia_satellite_plugin/releases/download/${PLUGIN_VERSION}/${WHEEL_NAME}
 
-ARG PLUGIN_VERSION=1.0.2
+ARG PLUGIN_VERSION=1.0.3
 ARG WHEEL_NAME=actinia_metadata_plugin.wsgi-${PLUGIN_VERSION}-py2.py3-none-any.whl
 RUN curl -L --output /build/${WHEEL_NAME} \
     https://github.com/actinia-org/actinia-metadata-plugin/releases/download/${PLUGIN_VERSION}/${WHEEL_NAME}
@@ -85,12 +85,12 @@ ARG WHEEL_NAME=actinia_module_plugin.wsgi-${PLUGIN_VERSION}-py2.py3-none-any.whl
 RUN curl -L --output /build/${WHEEL_NAME} \
     https://github.com/actinia-org/actinia-module-plugin/releases/download/${PLUGIN_VERSION}/${WHEEL_NAME}
 
-ARG PLUGIN_VERSION=0.1.1
+ARG PLUGIN_VERSION=0.2.1
 ARG WHEEL_NAME=actinia_stac_plugin.wsgi-${PLUGIN_VERSION}-py2.py3-none-any.whl
 RUN curl -L --output /build/${WHEEL_NAME} \
     https://github.com/actinia-org/actinia-stac-plugin/releases/download/${PLUGIN_VERSION}/${WHEEL_NAME}
 
-ARG PLUGIN_VERSION=1.0.0
+ARG PLUGIN_VERSION=1.0.2
 ARG WHEEL_NAME=actinia_tiling_plugin.wsgi-${PLUGIN_VERSION}-py2.py3-none-any.whl
 RUN curl -L --output /build/${WHEEL_NAME} \
     https://github.com/actinia-org/actinia-tiling-plugin/releases/download/${PLUGIN_VERSION}/${WHEEL_NAME}
@@ -100,7 +100,6 @@ ARG WHEEL_NAME=actinia_api-${ACTINIA_API_VERSION}-py3-none-any.whl
 RUN curl -L --output /build/${WHEEL_NAME} \
     https://github.com/actinia-org/actinia-api/releases/download/${ACTINIA_API_VERSION}/${WHEEL_NAME}
 
-# ARG WHEEL_NAME=actinia_core-${ACTINIA_CORE_VERSION}-py2.py3-none-any.whl
 ARG WHEEL_NAME=actinia_core-${ACTINIA_CORE_VERSION}-py3-none-any.whl
 RUN curl -L --output /build/${WHEEL_NAME} \
     https://github.com/actinia-org/actinia-core/releases/download/${ACTINIA_CORE_VERSION}/${WHEEL_NAME}

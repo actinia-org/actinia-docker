@@ -28,9 +28,24 @@ RUN pip3 install -e .
 
 # for actinia plugin development, incomment matching block
 
+# RUN pip3 uninstall actinia_metadata_plugin.wsgi -y
+# RUN git clone https://github.com/actinia-org/actinia-metadata-plugin.git /src/actinia-metadata-plugin
+# WORKDIR /src/actinia-metadata-plugin/
+# RUN pip3 install -e .
+
 # RUN pip3 uninstall actinia_module_plugin.wsgi -y
 # RUN git clone https://github.com/actinia-org/actinia-module-plugin.git /src/actinia-module-plugin
 # WORKDIR /src/actinia-module-plugin/
+# RUN pip3 install -e .
+
+# RUN pip3 uninstall actinia_parallel_plugin -y
+# RUN git clone https://github.com/actinia-org/actinia-parallel-plugin.git /src/actinia_parallel_plugin
+# WORKDIR /src/actinia_parallel_plugin/
+# RUN pip3 install -e .
+
+# RUN pip3 uninstall actinia_satellite_plugin -y
+# RUN git clone https://github.com/actinia-org/actinia-satellite-plugin.git /src/actinia_satellite_plugin
+# WORKDIR /src/actinia_satellite_plugin/
 # RUN pip3 install -e .
 
 # RUN pip3 uninstall actinia_stac_plugin.wsgi -y
@@ -38,19 +53,14 @@ RUN pip3 install -e .
 # WORKDIR /src/actinia-stac-plugin/
 # RUN pip3 install -e .
 
-# RUN pip3 uninstall actinia_metadata_plugin.wsgi -y
-# RUN git clone https://github.com/actinia-org/actinia-metadata-plugin.git /src/actinia-metadata-plugin
-# WORKDIR /src/actinia-metadata-plugin/
-# RUN pip3 install -e .
-
 # RUN pip3 uninstall actinia_statistic_plugin -y
 # RUN git clone https://github.com/actinia-org/actinia-statistic-plugin.git /src/actinia_statistic_plugin
 # WORKDIR /src/actinia_statistic_plugin/
 # RUN pip3 install -e .
 
-# RUN pip3 uninstall actinia_satellite_plugin -y
-# RUN git clone https://github.com/actinia-org/actinia-satellite-plugin.git /src/actinia_satellite_plugin
-# WORKDIR /src/actinia_satellite_plugin/
+# RUN pip3 uninstall actinia_tiling_plugin -y
+# RUN git clone https://github.com/actinia-org/actinia-tiling-plugin.git /src/actinia_tiling_plugin
+# WORKDIR /src/actinia_tiling_plugin/
 # RUN pip3 install -e .
 
 # RUN pip3 uninstall actinia_api -y
