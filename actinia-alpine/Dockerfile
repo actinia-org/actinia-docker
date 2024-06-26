@@ -110,7 +110,6 @@ RUN curl -L --output /build/${WHEEL_NAME} \
 # though older ones are already installed.
 RUN for i in /build/*; do pip3 install $i; done
 
-
 # Copy actinia config file and start scripts + set needed envs
 COPY actinia-alpine/actinia.cfg /etc/default/actinia
 COPY actinia-alpine/start.sh /src/start.sh
