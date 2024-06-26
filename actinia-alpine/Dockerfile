@@ -5,7 +5,7 @@ COPY .git /src/actinia-docker/.git
 WORKDIR /src/actinia-docker
 RUN git describe --dirty --tags --long --first-parent > /actinia-docker-version.txt
 
-FROM actinia:alpine-dependencies-20240618 as base
+FROM mundialis/actinia:alpine-dependencies-2024-06-26 as base
 FROM osgeo/grass-gis:releasebranch_8_4-alpine as grass
 FROM mundialis/esa-snap:s1tbx-543d1be as snap
 
@@ -80,8 +80,8 @@ ARG WHEEL_NAME=actinia_metadata_plugin.wsgi-${PLUGIN_VERSION}-py2.py3-none-any.w
 RUN curl -L --output /build/${WHEEL_NAME} \
     https://github.com/actinia-org/actinia-metadata-plugin/releases/download/${PLUGIN_VERSION}/${WHEEL_NAME}
 
-ARG PLUGIN_VERSION=2.5.0
-ARG WHEEL_NAME=actinia_module_plugin.wsgi-${PLUGIN_VERSION}-py2.py3-none-any.whl
+ARG PLUGIN_VERSION=2.6.0
+ARG WHEEL_NAME=actinia_module_plugin-${PLUGIN_VERSION}-py3-none-any.whl
 RUN curl -L --output /build/${WHEEL_NAME} \
     https://github.com/actinia-org/actinia-module-plugin/releases/download/${PLUGIN_VERSION}/${WHEEL_NAME}
 
