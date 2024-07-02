@@ -43,63 +43,72 @@
 				// while not using docker-compose for startup
 				"network": "actinia-docker_actinia-dev",
 				"ports": [
-				  {
-					"containerPort": 8088,
-					"hostPort": 8088
-				  }
+					{
+						"containerPort": 8088,
+						"hostPort": 8088
+					}
 				],
 				"customOptions": "--ip 172.18.0.11",
 				"volumes": [
 					// mount local source code for instant reload
 					// on changes
 					{
-				        "localPath": "${workspaceFolder}/actinia-core",
-					    "containerPath": "/src/actinia_core",
-					    "permissions": "rw"
-				    },
+						"localPath": "${workspaceFolder}/actinia-core",
+						"containerPath": "/src/actinia_core",
+						"permissions": "rw"
+					},
 					// mount GRASS DBs
 					{
 						"localPath": "${workspaceFolder}/actinia-docker/actinia-data/grassdb",
-
-					    "containerPath": "/actinia_core/grassdb",
-					    "permissions": "rw"
-				    },
+						"containerPath": "/actinia_core/grassdb",
+						"permissions": "rw"
+					},
 					{
 						"localPath": "${workspaceFolder}/actinia-docker/actinia-data/userdata",
-					    "containerPath": "/actinia_core/userdata",
-					    "permissions": "rw"
-				    },
+						"containerPath": "/actinia_core/userdata",
+						"permissions": "rw"
+					},
 					// mount other data
 					{
-				    	"localPath": "${workspaceFolder}/actinia-docker/actinia-data/pgpass",
-					    "containerPath": "/mnt/pgpass",
-					    "permissions": "rw"
-				    },
+						"localPath": "${workspaceFolder}/actinia-docker/actinia-data/pgpass",
+						"containerPath": "/mnt/pgpass",
+						"permissions": "rw"
+					},
 					{
-				    	"localPath": "${workspaceFolder}/actinia-docker/actinia-data/geodata_dir",
-					    "containerPath": "/mnt/geodata",
-					    "permissions": "rw"
-				    },
+						"localPath": "${workspaceFolder}/actinia-docker/actinia-data/geodata_dir",
+						"containerPath": "/mnt/geodata",
+						"permissions": "rw"
+					},
 					{
-				    	"localPath": "${workspaceFolder}/actinia-docker/actinia-data/workspace",
-					    "containerPath": "/actinia_core/workspace",
-					    "permissions": "rw"
-				    },
+						"localPath": "${workspaceFolder}/actinia-docker/actinia-data/workspace",
+						"containerPath": "/actinia_core/workspace",
+						"permissions": "rw"
+					},
 					{
-				    	"localPath": "${workspaceFolder}/actinia-docker/actinia-data/resources",
-					    "containerPath": "/actinia_core/resources",
-					    "permissions": "rw"
-				    },
+						"localPath": "${workspaceFolder}/actinia-docker/actinia-data/resources",
+						"containerPath": "/actinia_core/resources",
+						"permissions": "rw"
+					},
 					// mount plugin code on-demand
-					// {
-					// 	"localPath": "${workspaceFolder}/actinia-module-plugin/",
-					//     "containerPath": "/src/actinia-module-plugin/",
-					//     "permissions": "rw"
-					// },
 					// {
 					// 	"localPath": "${workspaceFolder}/actinia-metadata-plugin/",
 					//     "containerPath": "/src/actinia-metadata-plugin/",
 					//     "permissions": "rw"
+					// },
+					// {
+					// 	"localPath": "${workspaceFolder}/actinia-module-plugin/",
+					// 	"containerPath": "/src/actinia-module-plugin/",
+					// 	"permissions": "rw"
+					// },
+					// {
+					// 	"localPath": "${workspaceFolder}/actinia-parallel-plugin/",
+					//      "containerPath": "/src/actinia-parallel-plugin/",
+					//      "permissions": "rw"
+					// },
+					// {
+					// 	"localPath": "${workspaceFolder}/actinia-satellite-plugin/",
+					// 	"containerPath": "/src/actinia_satellite_plugin/",
+					// 	"permissions": "rw"
 					// },
 					// {
 					// 	"localPath": "${workspaceFolder}/actinia-stac-plugin/",
@@ -112,8 +121,8 @@
 					//     "permissions": "rw"
 					// },
 					// {
-					// 	"localPath": "${workspaceFolder}/actinia-satellite-plugin/",
-					//     "containerPath": "/src/actinia_satellite_plugin/",
+					// 	"localPath": "${workspaceFolder}/actinia-tiling-plugin/",
+					//     "containerPath": "/src/actinia_tiling_plugin/",
 					//     "permissions": "rw"
 					// },
 					// {

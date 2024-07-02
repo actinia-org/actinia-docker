@@ -15,11 +15,11 @@ chmod 0600 $HOME/.pgpass
 cp /mnt/pgpass/.grass8 $HOME/.grass8/dblogin
 chmod 0600 $HOME/.grass8/dblogin
 
-# copy db.login file to actinia-core tmp location
+# copy db.login file to actinia-core tmp project
 mkdir -p /tmp/:/root/.grass8
 cp /root/.grass8/dblogin /tmp/:/root/.grass8/
 
-# Create default location in mounted (!) directory
+# Create default project in mounted (!) directory
 [ ! -d "/actinia_core/grassdb/nc_spm_08" ] && grass --text -e -c 'EPSG:3358' /actinia_core/grassdb/nc_spm_08
 
 actinia-user create -u actinia-gdi -w actinia-gdi -r superadmin -g superadmin -c 100000000000 -n 1000 -t 31536000

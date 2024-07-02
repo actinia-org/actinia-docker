@@ -1,13 +1,13 @@
-FROM alpine:3.18 as version
+FROM alpine:3.20 as version
 RUN apk add git
 
 COPY .git /src/actinia-docker/.git
 WORKDIR /src/actinia-docker
 RUN git describe --dirty --tags --long --first-parent > /actinia-docker-version.txt
 
-FROM mundialis/actinia:alpine-dependencies-2024-05-24 as base
-FROM osgeo/grass-gis:releasebranch_8_3-alpine as grass
-FROM mundialis/esa-snap:s1tbx-c149a5b as snap
+FROM mundialis/actinia:alpine-dependencies-2024-06-26 as base
+FROM osgeo/grass-gis:releasebranch_8_4-alpine as grass
+FROM mundialis/esa-snap:s1tbx-543d1be as snap
 
 FROM base
 
@@ -19,7 +19,7 @@ ENV GDAL_CACHEMAX=2000
 ENV GRASS_COMPRESSOR=ZSTD
 ENV GRASS_SKIP_MAPSET_OWNER_CHECK 1
 ENV GISBASE ""
-ENV ACTINIA_CORE_VERSION=4.14.0
+ENV ACTINIA_CORE_VERSION=4.14.1
 
 USER root
 
@@ -44,7 +44,7 @@ COPY --from=grass /usr/local/grass/etc/proj/ /etc/proj/
 COPY --from=grass /usr/local/grass/etc/colors/ /etc/colors/
 RUN pip3 install --upgrade pip six grass-session --ignore-installed six
 RUN ln -s /usr/local/grass `grass --config path`
-RUN grass --tmp-location EPSG:4326 --exec g.version -rge && \
+RUN grass --tmp-project EPSG:4326 --exec g.version -rge && \
     pdal --version && \
     python3 --version
 
@@ -60,47 +60,46 @@ RUN git clone https://github.com/NVE/actinia_modules_nve.git /src/nve-addons
 
 COPY grass_addons_list.csv /src/grass_addons_list.csv
 
-RUN while IFS=, read -r ADDON SERVER; do if [[ $ADDON != "#*" ]]; then unset URL; test -z $SERVER || URL="url=$SERVER"; grass --tmp-location EPSG:4326 --exec g.extension -s extension=$ADDON $URL;fi;done < /src/grass_addons_list.csv
+RUN while IFS=, read -r ADDON SERVER; do if [[ $ADDON != "#*" ]]; then unset URL; test -z $SERVER || URL="url=$SERVER"; grass --tmp-project EPSG:4326 --exec g.extension -s extension=$ADDON $URL;fi;done < /src/grass_addons_list.csv
 
 # actinia-core and plugins installation
 WORKDIR /build
 
-ARG PLUGIN_VERSION=0.2.1
+ARG PLUGIN_VERSION=0.2.2
 ARG WHEEL_NAME=actinia_statistic_plugin-${PLUGIN_VERSION}-py2.py3-none-any.whl
 RUN curl -L --output /build/${WHEEL_NAME} \
     https://github.com/actinia-org/actinia_statistic_plugin/releases/download/${PLUGIN_VERSION}/${WHEEL_NAME}
 
-ARG PLUGIN_VERSION=0.1.0
+ARG PLUGIN_VERSION=0.1.2
 ARG WHEEL_NAME=actinia_satellite_plugin-${PLUGIN_VERSION}-py2.py3-none-any.whl
 RUN curl -L --output /build/${WHEEL_NAME} \
     https://github.com/actinia-org/actinia_satellite_plugin/releases/download/${PLUGIN_VERSION}/${WHEEL_NAME}
 
-ARG PLUGIN_VERSION=1.0.2
+ARG PLUGIN_VERSION=1.0.3
 ARG WHEEL_NAME=actinia_metadata_plugin.wsgi-${PLUGIN_VERSION}-py2.py3-none-any.whl
 RUN curl -L --output /build/${WHEEL_NAME} \
     https://github.com/actinia-org/actinia-metadata-plugin/releases/download/${PLUGIN_VERSION}/${WHEEL_NAME}
 
-ARG PLUGIN_VERSION=2.5.0
-ARG WHEEL_NAME=actinia_module_plugin.wsgi-${PLUGIN_VERSION}-py2.py3-none-any.whl
+ARG PLUGIN_VERSION=2.6.0
+ARG WHEEL_NAME=actinia_module_plugin-${PLUGIN_VERSION}-py3-none-any.whl
 RUN curl -L --output /build/${WHEEL_NAME} \
     https://github.com/actinia-org/actinia-module-plugin/releases/download/${PLUGIN_VERSION}/${WHEEL_NAME}
 
-ARG PLUGIN_VERSION=0.1.1
+ARG PLUGIN_VERSION=0.2.1
 ARG WHEEL_NAME=actinia_stac_plugin.wsgi-${PLUGIN_VERSION}-py2.py3-none-any.whl
 RUN curl -L --output /build/${WHEEL_NAME} \
     https://github.com/actinia-org/actinia-stac-plugin/releases/download/${PLUGIN_VERSION}/${WHEEL_NAME}
 
-ARG PLUGIN_VERSION=1.0.0
+ARG PLUGIN_VERSION=1.0.2
 ARG WHEEL_NAME=actinia_tiling_plugin.wsgi-${PLUGIN_VERSION}-py2.py3-none-any.whl
 RUN curl -L --output /build/${WHEEL_NAME} \
     https://github.com/actinia-org/actinia-tiling-plugin/releases/download/${PLUGIN_VERSION}/${WHEEL_NAME}
 
-ENV ACTINIA_API_VERSION=3.4.0
+ENV ACTINIA_API_VERSION=3.4.1
 ARG WHEEL_NAME=actinia_api-${ACTINIA_API_VERSION}-py3-none-any.whl
 RUN curl -L --output /build/${WHEEL_NAME} \
     https://github.com/actinia-org/actinia-api/releases/download/${ACTINIA_API_VERSION}/${WHEEL_NAME}
 
-# ARG WHEEL_NAME=actinia_core-${ACTINIA_CORE_VERSION}-py2.py3-none-any.whl
 ARG WHEEL_NAME=actinia_core-${ACTINIA_CORE_VERSION}-py3-none-any.whl
 RUN curl -L --output /build/${WHEEL_NAME} \
     https://github.com/actinia-org/actinia-core/releases/download/${ACTINIA_CORE_VERSION}/${WHEEL_NAME}
@@ -131,7 +130,7 @@ WORKDIR /src/actinia_core
 # install GDAL GRASS plugin (required for i.sentinel1.pyrosargeocode)
 RUN mkdir -p /usr/lib/gdalplugins
 RUN git clone https://github.com/OSGeo/gdal-grass.git
-RUN cd gdal-grass && ./configure --with-gdal=/usr/bin/gdal-config --with-grass=/usr/local/grass83 \
+RUN cd gdal-grass && ./configure --with-gdal=/usr/bin/gdal-config --with-grass=/usr/local/grass84 \
 && make && make install
 RUN cd .. && rm -rf gdal-grass
 
