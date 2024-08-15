@@ -3,4 +3,4 @@ actinia-data/grassdb
 actinia-data/resources
 actinia-data/userdata
 actinia-data/workspace
-redis_data/dump.rdb
+valkey_data/dump.rdb
