@@ -13,9 +13,9 @@
 			}
 		},
 		{
-			"label": "start-redis",
+			"label": "start-valkey",
 			"type": "shell",
-			"command": "docker-compose -f actinia-docker/docker-compose-dev.yml up -d --force-recreate redis",
+			"command": "docker-compose -f actinia-docker/docker-compose-dev.yml up -d --force-recreate valkey",
 			"isBackground": true,
 		},
 		{
@@ -23,7 +23,7 @@
 			"label": "docker-run: debug",
 			"dependsOn": [
 				"docker-build",
-				"start-redis"
+				"start-valkey"
 			],
 			"python": {
 				"module": "flask",
@@ -39,7 +39,7 @@
 			},
 			"dockerRun": {
 				"remove": true,
-				// network is needed when connecting to redis
+				// network is needed when connecting to valkey
 				// while not using docker-compose for startup
 				"network": "actinia-docker_actinia-dev",
 				"ports": [
