@@ -47,9 +47,9 @@ __actinia-data__
 
 <a id="startup-errors"></a>
 # How to fix common startup errors
-* if a redis db is running locally this will fail. Run and try again:
+* if a key-value db is running locally this will fail. Run and try again:
 ```
-/etc/init.d/redis-server stop
+/etc/init.d/valkey-server stop
 ```
 * if you see an error like "max virtual memory areas vm.max_map_count [65530] is too low, increase to at least [262144]", run
 ```
@@ -207,7 +207,7 @@ See this [README](https://github.com/actinia-org/actinia-core/tree/main/docker#t
 <a id="production-deployment"></a>
 # Production deployment
 
-To run actinia_core in production systems, you can use the docker-compose-prod.yml. Please change before the default redis password in redis_data/config/.redis and inside the actinia.cfg. Also incomment the `build` block in the `docker-compose.yml`. Additional change the keycloak and postgis passwords in `.env` file.
+To run actinia_core in production systems, you can use the docker-compose-prod.yml. Please change before the default valkey password in valkey_data/config/.valkey and inside the actinia.cfg. Also incomment the `build` block in the `docker-compose.yml`. Additional change the keycloak and postgis passwords in `.env` file.
 
 To start the server, run:
 
@@ -215,7 +215,7 @@ To start the server, run:
 docker-compose -f docker-compose.yml build
 docker-compose -f docker-compose.yml up -d
 ```
-Then actinia runs at 'http://127.0.0.1:8088' and depending on your server settings might be accessible from outside. Because of this the start.sh is overwritten to not create any user to avoid security vulnerability. You will have to use a clean redis database to avoid stored actinia credentials from previous runs. You have to create the user by yourself by using the built-in actinia-user cli. __Please change below username (-u) and password (-w)__:
+Then actinia runs at 'http://127.0.0.1:8088' and depending on your server settings might be accessible from outside. Because of this the start.sh is overwritten to not create any user to avoid security vulnerability. You will have to use a clean key-value database to avoid stored actinia credentials from previous runs. You have to create the user by yourself by using the built-in actinia-user cli. __Please change below username (-u) and password (-w)__:
 ```
 # list help about the cli tool:
 docker-compose -f docker-compose.yml exec actinia \

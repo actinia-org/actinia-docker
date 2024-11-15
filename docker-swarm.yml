@@ -24,10 +24,10 @@ services:
     networks:
       - backend
     depends_on:
-      - redis
+      - valkey
 
-  redis:
-    image: redis:5.0.4-alpine
+  valkey:
+    image: valkey/valkey:8.0-alpine
     deploy:
       replicas: 1
       resources:
@@ -37,15 +37,15 @@ services:
       placement:
         constraints: [node.role == manager]
     volumes:
-      - ./redis_data:/data
+      - ./valkey_data:/data
     environment:
-      - REDIS_PASS_FILE=/data/config/.redis
+      - VALKEY_PASS_FILE=/data/config/.valkey
     command: [
       "sh", "-c",
       '
       docker-entrypoint.sh
-      "/data/config/redis.conf"
-      --requirepass "$$(cat $$REDIS_PASS_FILE)"
+      "/data/config/valkey.conf"
+      --requirepass "$$(cat $$VALKEY_PASS_FILE)"
       '
     ]
     networks:
