@@ -47,7 +47,7 @@ __actinia-data__
 
 <a id="startup-errors"></a>
 # How to fix common startup errors
-* if a key-value db is running locally this will fail. Run and try again:
+* if a valkey db is running locally this will fail. Run and try again:
 ```
 /etc/init.d/valkey-server stop
 ```
