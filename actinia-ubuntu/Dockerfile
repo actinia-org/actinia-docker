@@ -70,10 +70,13 @@ WORKDIR /src
 
 # git clone various openEO plugins (local checkout due to non-standard repo structure)
 RUN git clone https://github.com/mundialis/openeo-addons.git
+RUN git clone https://github.com/NVE/actinia_modules_nve.git /src/nve-addons
 
 # loop over addon list
 COPY grass_addons_list.csv /src/grass_addons_list.csv
-RUN while IFS=, read -r ADDON SERVER; do unset URL; test -z $SERVER || URL="url=$SERVER"; grass --tmp-location EPSG:4326 --exec g.extension -s extension=$ADDON $URL;done < /src/grass_addons_list.csv
+
+RUN while IFS=, read -r ADDON SERVER; do if [[ $ADDON != "#*" ]]; then unset URL; test -z $SERVER || URL="url=$SERVER"; grass --tmp-location EPSG:4326 --exec g.extension -s extension=$ADDON $URL;fi;done < /src/grass_addons_list.csv
+
 
 # install SNAPPY
 # SNAP wants the current folder '.' included in LD_LIBRARY_PATH
