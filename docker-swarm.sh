@@ -1,7 +1,7 @@
 # Put this node into the docker swarm
 docker swarm init --advertise-addr docker0
 
-# Create the overlay network that connects the actinia container with the redis container
+# Create the overlay network that connects the actinia container with the key-value database container
 docker network create \
   --driver overlay \
   --subnet 172.20.128.0/24 \
@@ -21,7 +21,7 @@ docker stack deploy -c docker-swarm.yml actinia_swarm
 docker service ls
 # List infos about each docker run of the swarm
 docker service ps actinia_swarm_actinia
-docker service ps actinia_swarm_redis
+docker service ps actinia_swarm_valkey
 
 # Remove the stack
 # outcommented, otherwise this script is useless ;)

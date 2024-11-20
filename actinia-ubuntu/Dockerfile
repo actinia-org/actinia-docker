@@ -33,8 +33,6 @@ RUN apt-get update && apt-get upgrade -y && \
     python3-magic \
     python3-pip \
     python3-ply \
-    redis-server \
-    redis-tools \
     rsync \
     subversion \
     unzip \
@@ -72,10 +70,13 @@ WORKDIR /src
 
 # git clone various openEO plugins (local checkout due to non-standard repo structure)
 RUN git clone https://github.com/mundialis/openeo-addons.git
+RUN git clone https://github.com/NVE/actinia_modules_nve.git /src/nve-addons
 
 # loop over addon list
 COPY grass_addons_list.csv /src/grass_addons_list.csv
-RUN while IFS=, read -r ADDON SERVER; do unset URL; test -z $SERVER || URL="url=$SERVER"; grass --tmp-location EPSG:4326 --exec g.extension -s extension=$ADDON $URL;done < /src/grass_addons_list.csv
+
+RUN while IFS=, read -r ADDON SERVER; do if [[ $ADDON != "#*" ]]; then unset URL; test -z $SERVER || URL="url=$SERVER"; grass --tmp-location EPSG:4326 --exec g.extension -s extension=$ADDON $URL;fi;done < /src/grass_addons_list.csv
+
 
 # install SNAPPY
 # SNAP wants the current folder '.' included in LD_LIBRARY_PATH
@@ -97,8 +98,6 @@ RUN python3 -m pip install --user --upgrade setuptools wheel
 RUN python3 setup.py sdist bdist_wheel -d /build
 RUN pip3 install /build/*
 
-## install (Cython must be installed before requirements.txt)
-#RUN pip3 install Cython cython-setuptools setuptools_cython
 RUN pip3 install scikit-learn && pip3 install .
 ## TODO: fix tests
 #\
