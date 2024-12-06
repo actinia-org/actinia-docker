@@ -1,4 +1,4 @@
-FROM alpine:3.20 as version
+FROM alpine:3.21 as version
 RUN apk add git
 
 COPY .git /src/actinia-docker/.git
