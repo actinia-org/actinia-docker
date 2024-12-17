@@ -1,4 +1,4 @@
-FROM alpine:3.20
+FROM alpine:3.21
 
 ENV ACTINIA_BUILD_PACKAGES="\
     gcc \
@@ -94,6 +94,9 @@ ENV GOOGLE_CLOUD_BIGQUERY_PACKAGES="\
 ENV ACTINIA_RUNTIME_PACKAGES="\
     coreutils \
     rsync \
+    py3-shapely \
+    py3-rasterio \
+    py3-scikit-learn \
     zip \
     "
 
