@@ -129,11 +129,11 @@ where the `config_path` is the file to the Keycloak OIDC JSON from the actinia c
 
 Then you can start the docker DEV setup as in [local dev-setup with docker](https://github.com/actinia-org/actinia-core/tree/main/docker#local-dev-setup-with-docker).
 ```
-docker-compose -f docker-compose-dev.yml build
+docker compose -f docker-compose-dev.yml build
 # start first postgis
-docker-compose -f docker-compose-dev.yml up -d postgis
+docker compose -f docker-compose-dev.yml up -d postgis
 # then start keycloak
-docker-compose -f docker-compose-dev.yml up -d keycloak
+docker compose -f docker-compose-dev.yml up -d keycloak
 ```
 
 By **first Keycloak setup** you have to load the inital keycloak data:

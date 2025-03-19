@@ -15,7 +15,7 @@
 		{
 			"label": "start-valkey",
 			"type": "shell",
-			"command": "docker-compose -f actinia-docker/docker-compose-dev.yml up -d --force-recreate valkey",
+			"command": "docker compose -f actinia-docker/docker-compose-dev.yml up -d --force-recreate valkey",
 			"isBackground": true,
 		},
 		{
