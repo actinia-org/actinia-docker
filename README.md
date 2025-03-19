@@ -71,8 +71,8 @@ in `actinia-dev/Dockerfile` (see outcommented code) and mount local checkouts in
 container via `docker-compose-dev.yml` file (also see outcommented code).
 Build and run like described below and rebuild from your mounted source code:
 ```
-docker-compose -f docker-compose-dev.yml build
-docker-compose -f docker-compose-dev.yml run --rm --service-ports --entrypoint sh actinia
+docker compose -f docker-compose-dev.yml build
+docker compose -f docker-compose-dev.yml run --rm --service-ports --entrypoint sh actinia
 
 (cd /src/actinia_core && python3 setup.py install)
 
