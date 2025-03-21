@@ -89,12 +89,12 @@
 						"containerPath": "/actinia_core/resources",
 						"permissions": "rw"
 					},
+					{
+						"localPath": "${workspaceFolder}/actinia-example-plugin/",
+					    "containerPath": "/src/actinia-example-plugin/",
+					    "permissions": "rw"
+					},
 					// mount plugin code on-demand
-					// {
-					// 	"localPath": "${workspaceFolder}/actinia-example-plugin/",
-					//     "containerPath": "/src/actinia-example-plugin/",
-					//     "permissions": "rw"
-					// },
 					// {
 					// 	"localPath": "${workspaceFolder}/actinia-metadata-plugin/",
 					//     "containerPath": "/src/actinia-metadata-plugin/",

@@ -27,12 +27,12 @@ RUN git config --global --add safe.directory /src/actinia*
 WORKDIR /src/actinia_core/
 RUN pip3 install -e .
 
-# for actinia plugin development, incomment matching block
+RUN pip3 uninstall actinia_example_plugin.wsgi -y
+RUN git clone https://github.com/actinia-org/actinia-example-plugin.git /src/actinia-example-plugin
+WORKDIR /src/actinia-example-plugin/
+RUN pip3 install -e .
 
-# RUN pip3 uninstall actinia_example_plugin.wsgi -y
-# RUN git clone https://github.com/actinia-org/actinia-example-plugin.git /src/actinia-example-plugin
-# WORKDIR /src/actinia-example-plugin/
-# RUN pip3 install -e .
+# for actinia plugin development, incomment matching block
 
 # RUN pip3 uninstall actinia_metadata_plugin.wsgi -y
 # RUN git clone https://github.com/actinia-org/actinia-metadata-plugin.git /src/actinia-metadata-plugin
