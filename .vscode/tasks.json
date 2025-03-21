@@ -15,7 +15,7 @@
 		{
 			"label": "start-valkey",
 			"type": "shell",
-			"command": "docker-compose -f actinia-docker/docker-compose-dev.yml up -d --force-recreate valkey",
+			"command": "docker compose -f actinia-docker/docker-compose-dev.yml up -d --force-recreate valkey",
 			"isBackground": true,
 		},
 		{
@@ -91,14 +91,19 @@
 					},
 					// mount plugin code on-demand
 					// {
+					// 	"localPath": "${workspaceFolder}/actinia-example-plugin/",
+					//     "containerPath": "/src/actinia-example-plugin/",
+					//     "permissions": "rw"
+					// },
+					// {
 					// 	"localPath": "${workspaceFolder}/actinia-metadata-plugin/",
 					//     "containerPath": "/src/actinia-metadata-plugin/",
 					//     "permissions": "rw"
 					// },
 					// {
 					// 	"localPath": "${workspaceFolder}/actinia-module-plugin/",
-					// 	"containerPath": "/src/actinia-module-plugin/",
-					// 	"permissions": "rw"
+					// 		"containerPath": "/src/actinia-module-plugin/",
+					// 		"permissions": "rw"
 					// },
 					// {
 					// 	"localPath": "${workspaceFolder}/actinia-parallel-plugin/",
@@ -107,8 +112,8 @@
 					// },
 					// {
 					// 	"localPath": "${workspaceFolder}/actinia-satellite-plugin/",
-					// 	"containerPath": "/src/actinia_satellite_plugin/",
-					// 	"permissions": "rw"
+					// 		"containerPath": "/src/actinia_satellite_plugin/",
+					// 		"permissions": "rw"
 					// },
 					// {
 					// 	"localPath": "${workspaceFolder}/actinia-stac-plugin/",

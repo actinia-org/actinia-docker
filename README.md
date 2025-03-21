@@ -71,8 +71,8 @@ in `actinia-dev/Dockerfile` (see outcommented code) and mount local checkouts in
 container via `docker-compose-dev.yml` file (also see outcommented code).
 Build and run like described below and rebuild from your mounted source code:
 ```
-docker-compose -f docker-compose-dev.yml build
-docker-compose -f docker-compose-dev.yml run --rm --service-ports --entrypoint sh actinia
+docker compose -f docker-compose-dev.yml build
+docker compose -f docker-compose-dev.yml run --rm --service-ports --entrypoint sh actinia
 
 (cd /src/actinia_core && python3 setup.py install)
 
@@ -87,7 +87,9 @@ git config --global --add safe.directory /src/actinia-module-plugin
 # you can also run tests here, eg.
 (cd /src/actinia-module-plugin && python3 setup.py test)
 
-gunicorn -b 0.0.0.0:8088 -w 1 --access-logfile=- -k gthread actinia_core.main:flask_app
+# Includes creation of actinia-gdi user
+sh /src/start.sh
+# gunicorn -b 0.0.0.0:8088 -w 1 --access-logfile=- -k gthread actinia_core.main:flask_app
 ```
 
 To avoid cache problems, remove the packaged actinia_core (already done in Dockerfile)
@@ -129,11 +131,11 @@ where the `config_path` is the file to the Keycloak OIDC JSON from the actinia c
 
 Then you can start the docker DEV setup as in [local dev-setup with docker](https://github.com/actinia-org/actinia-core/tree/main/docker#local-dev-setup-with-docker).
 ```
-docker-compose -f docker-compose-dev.yml build
+docker compose -f docker-compose-dev.yml build
 # start first postgis
-docker-compose -f docker-compose-dev.yml up -d postgis
+docker compose -f docker-compose-dev.yml up -d postgis
 # then start keycloak
-docker-compose -f docker-compose-dev.yml up -d keycloak
+docker compose -f docker-compose-dev.yml up -d keycloak
 ```
 
 By **first Keycloak setup** you have to load the inital keycloak data:
