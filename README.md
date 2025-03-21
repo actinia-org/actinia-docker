@@ -63,6 +63,7 @@ sudo sysctl -w vm.max_map_count=262144
 
 For a dev setup where no actinia plugins are involved, simply follow the [steps explained in actinia-core](https://github.com/actinia-org/actinia-core/tree/main/docker#local-dev-setup-with-docker) directly. Instead of from `actinia_core/docker` run the steps from `actinia-docker`.
 
+
 ## Local dev-setup for actinia-core plugins
 For a local dev setup for actinia-core and actinia-core plugins
 (eg. actinia-actinia-metadata-plugin or actinia-module-plugin), uninstall them
