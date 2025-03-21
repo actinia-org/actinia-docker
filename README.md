@@ -87,7 +87,9 @@ git config --global --add safe.directory /src/actinia-module-plugin
 # you can also run tests here, eg.
 (cd /src/actinia-module-plugin && python3 setup.py test)
 
-gunicorn -b 0.0.0.0:8088 -w 1 --access-logfile=- -k gthread actinia_core.main:flask_app
+# Includes creation of actinia-gdi user
+sh /src/start.sh
+# gunicorn -b 0.0.0.0:8088 -w 1 --access-logfile=- -k gthread actinia_core.main:flask_app
 ```
 
 To avoid cache problems, remove the packaged actinia_core (already done in Dockerfile)
