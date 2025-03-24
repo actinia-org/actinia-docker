@@ -1,13 +1,13 @@
-FROM alpine:3.20 as version
+FROM alpine:3.21 as version
 RUN apk add git
 
 COPY .git /src/actinia-docker/.git
 WORKDIR /src/actinia-docker
 RUN git describe --dirty --tags --long --first-parent > /actinia-docker-version.txt
 
-FROM mundialis/actinia:alpine-dependencies-2024-07-02 as base
-FROM osgeo/grass-gis:releasebranch_8_4-alpine as grass
-FROM mundialis/esa-snap:s1tbx-543d1be as snap
+FROM mundialis/actinia:alpine-dependencies-2025-03-14 as base
+FROM osgeo/grass-gis:main-alpine as grass
+FROM mundialis/esa-snap:s1tbx-31e0b3d as snap
 
 FROM base
 
@@ -19,7 +19,7 @@ ENV GDAL_CACHEMAX=2000
 ENV GRASS_COMPRESSOR=ZSTD
 ENV GRASS_SKIP_MAPSET_OWNER_CHECK 1
 ENV GISBASE ""
-ENV ACTINIA_CORE_VERSION=5.0.0
+ENV ACTINIA_CORE_VERSION=5.1.0
 
 USER root
 
@@ -39,11 +39,12 @@ COPY --from=version /actinia-docker-version.txt /
 # GRASS GIS SETUP
 COPY --from=grass /usr/local/bin/grass /usr/local/bin/grass
 COPY --from=grass /usr/local/grass* /usr/local/grass/
-# COPY --from=grass /usr/lib/gdalplugins/*_GRASS* /usr/lib/gdalplugins/
+COPY --from=grass /usr/lib/gdalplugins/*_GRASS* /usr/lib/gdalplugins/
 COPY --from=grass /usr/local/grass/etc/proj/ /etc/proj/
 COPY --from=grass /usr/local/grass/etc/colors/ /etc/colors/
 RUN pip3 install --upgrade pip six grass-session --ignore-installed six
-RUN ln -s /usr/local/grass `grass --config path`
+# RUN ln -s /usr/local/grass `grass --config path`
+RUN ln -s /usr/local/grass /usr/local/grass85
 RUN grass --tmp-project EPSG:4326 --exec g.version -rge && \
     pdal --version && \
     python3 --version

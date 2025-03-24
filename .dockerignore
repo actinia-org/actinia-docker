@@ -11,6 +11,6 @@ create-docs.sh
 docker-compose*
 docker-swarm*
 fluentd
-redis_data
+valkey_data
 
 Dockerfile*
