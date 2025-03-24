@@ -128,10 +128,13 @@ VOLUME /grassdb
 WORKDIR /src/actinia_core
 
 # install GDAL GRASS plugin (required for i.sentinel1.pyrosargeocode)
+RUN apk add cmake
 RUN mkdir -p /usr/lib/gdalplugins
 RUN git clone https://github.com/OSGeo/gdal-grass.git
-RUN cd gdal-grass && ./configure --with-gdal=/usr/bin/gdal-config --with-grass=/usr/local/grass84 \
-&& make && make install
+RUN cd gdal-grass \
+&& cmake -B build -DAUTOLOAD_DIR=/usr/lib/gdalplugins -DBUILD_TESTING=OFF \
+&& cmake --build build \
+&& cmake --install build
 RUN cd .. && rm -rf gdal-grass
 
 ENTRYPOINT ["/bin/sh"]
