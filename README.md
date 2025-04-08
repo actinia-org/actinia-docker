@@ -18,7 +18,7 @@ curl http://127.0.0.1:8088/api/v3/version
 * Want to __start developing__? Look for [Local dev-setup with docker](#local-dev-setup) below.
 * For __production deployment__, see [Production deployment](#production-deployment) below.
 
-On startup, some GRASS GIS locations are created by default but they are still empty. How to get some geodata to start processing, see in [Testing GRASS GIS inside a container](#grass-gis)  below.
+On startup, some GRASS GIS projects are created by default but they are still empty. How to get some geodata to start processing, see in [Testing GRASS GIS inside a container](#grass-gis)  below.
 
 # General
 
@@ -197,7 +197,7 @@ Request actinia via Keycloak token:
 TOKEN=xxx
 curl -H 'Accept: application/json' -H "Authorization: Bearer ${TOKEN}" http://localhost:8088/api/v3/version | jq
 # request mapsets
-curl -H 'Accept: application/json' -H "Authorization: Bearer ${TOKEN}" http://localhost:8088/api/v3/locations/nc_spm_08/mapsets | jq
+curl -H 'Accept: application/json' -H "Authorization: Bearer ${TOKEN}" http://localhost:8088/api/v3/projects/nc_spm_08/mapsets | jq
 ```
 
 
@@ -240,7 +240,7 @@ Examples:
 * https://actinia.mundialis.de/latest/version
 * https://actinia.mundialis.de/latest/health_check
 * requires authorization (actinia user):
-    * https://actinia.mundialis.de/api/v3/locations
+    * https://actinia.mundialis.de/api/v3/projects
 
 # Cloud deployment with multiple actinia_core instances
 

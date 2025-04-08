@@ -59,7 +59,7 @@ RUN ln -sf `find /usr/local/bin -name "grass??" | sort | tail -n 1` /usr/local/b
 # Create a generic link to GRASS GIS libs (simplifies actinia configuration)
 RUN ln -s `grass --config path` /usr/local/grass
 # show installed versions
-RUN grass --tmp-location EPSG:4326 --exec g.version -rge && \
+RUN grass --tmp-project EPSG:4326 --exec g.version -rge && \
     pdal --version && \
     python3 --version
 
@@ -75,7 +75,7 @@ RUN git clone https://github.com/NVE/actinia_modules_nve.git /src/nve-addons
 # loop over addon list
 COPY grass_addons_list.csv /src/grass_addons_list.csv
 
-RUN while IFS=, read -r ADDON SERVER; do if [[ $ADDON != "#*" ]]; then unset URL; test -z $SERVER || URL="url=$SERVER"; grass --tmp-location EPSG:4326 --exec g.extension -s extension=$ADDON $URL;fi;done < /src/grass_addons_list.csv
+RUN while IFS=, read -r ADDON SERVER; do if [[ $ADDON != "#*" ]]; then unset URL; test -z $SERVER || URL="url=$SERVER"; grass --tmp-project EPSG:4326 --exec g.extension -s extension=$ADDON $URL;fi;done < /src/grass_addons_list.csv
 
 
 # install SNAPPY

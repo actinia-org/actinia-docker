@@ -12,5 +12,6 @@ docker-compose*
 docker-swarm*
 fluentd
 valkey_data
+postgis/postgres_data
 
 Dockerfile*
