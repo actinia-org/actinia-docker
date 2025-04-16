@@ -66,13 +66,13 @@ RUN while IFS=, read -r ADDON SERVER; do if [[ $ADDON != "#*" ]]; then unset URL
 # actinia-core and plugins installation
 WORKDIR /build
 
-ARG PLUGIN_VERSION=0.2.2
-ARG WHEEL_NAME=actinia_statistic_plugin-${PLUGIN_VERSION}-py2.py3-none-any.whl
+ARG PLUGIN_VERSION=0.3.1
+ARG WHEEL_NAME=actinia_statistic_plugin-${PLUGIN_VERSION}-py3-none-any.whl
 RUN curl -L --output /build/${WHEEL_NAME} \
     https://github.com/actinia-org/actinia_statistic_plugin/releases/download/${PLUGIN_VERSION}/${WHEEL_NAME}
 
-ARG PLUGIN_VERSION=0.1.2
-ARG WHEEL_NAME=actinia_satellite_plugin-${PLUGIN_VERSION}-py2.py3-none-any.whl
+ARG PLUGIN_VERSION=0.2.1
+ARG WHEEL_NAME=actinia_satellite_plugin-${PLUGIN_VERSION}-py3-none-any.whl
 RUN curl -L --output /build/${WHEEL_NAME} \
     https://github.com/actinia-org/actinia_satellite_plugin/releases/download/${PLUGIN_VERSION}/${WHEEL_NAME}
 
@@ -81,20 +81,30 @@ ARG WHEEL_NAME=actinia_metadata_plugin.wsgi-${PLUGIN_VERSION}-py2.py3-none-any.w
 RUN curl -L --output /build/${WHEEL_NAME} \
     https://github.com/actinia-org/actinia-metadata-plugin/releases/download/${PLUGIN_VERSION}/${WHEEL_NAME}
 
-ARG PLUGIN_VERSION=2.7.0
+ARG PLUGIN_VERSION=2.8.0
 ARG WHEEL_NAME=actinia_module_plugin-${PLUGIN_VERSION}-py3-none-any.whl
 RUN curl -L --output /build/${WHEEL_NAME} \
     https://github.com/actinia-org/actinia-module-plugin/releases/download/${PLUGIN_VERSION}/${WHEEL_NAME}
 
-ARG PLUGIN_VERSION=0.2.1
-ARG WHEEL_NAME=actinia_stac_plugin.wsgi-${PLUGIN_VERSION}-py2.py3-none-any.whl
+ARG PLUGIN_VERSION=0.3.1
+ARG WHEEL_NAME=actinia_stac_plugin.wsgi-${PLUGIN_VERSION}-py3-none-any.whl
 RUN curl -L --output /build/${WHEEL_NAME} \
     https://github.com/actinia-org/actinia-stac-plugin/releases/download/${PLUGIN_VERSION}/${WHEEL_NAME}
 
-ARG PLUGIN_VERSION=1.0.2
-ARG WHEEL_NAME=actinia_tiling_plugin.wsgi-${PLUGIN_VERSION}-py2.py3-none-any.whl
+ARG PLUGIN_VERSION=1.1.1
+ARG WHEEL_NAME=actinia_tiling_plugin.wsgi-${PLUGIN_VERSION}-py3-none-any.whl
 RUN curl -L --output /build/${WHEEL_NAME} \
     https://github.com/actinia-org/actinia-tiling-plugin/releases/download/${PLUGIN_VERSION}/${WHEEL_NAME}
+
+# ARG PLUGIN_VERSION=1.1.2
+# ARG WHEEL_NAME=actinia_parallel_plugin-${PLUGIN_VERSION}-py3-none-any.whl
+# RUN curl -L --output /build/${WHEEL_NAME} \
+#     https://github.com/actinia-org/actinia-parallel-plugin/releases/download/${PLUGIN_VERSION}/${WHEEL_NAME}
+
+ARG PLUGIN_VERSION=1.0.0
+ARG WHEEL_NAME=actinia_example_plugin-${PLUGIN_VERSION}-py3-none-any.whl
+RUN curl -L --output /build/${WHEEL_NAME} \
+    https://github.com/actinia-org/actinia-example-plugin/releases/download/${PLUGIN_VERSION}/${WHEEL_NAME}
 
 ENV ACTINIA_API_VERSION=3.7.0
 ARG WHEEL_NAME=actinia_api-${ACTINIA_API_VERSION}-py3-none-any.whl
