@@ -66,50 +66,23 @@ RUN while IFS=, read -r ADDON SERVER; do if [[ $ADDON != "#*" ]]; then unset URL
 # actinia-core and plugins installation
 WORKDIR /build
 
-ARG PLUGIN_VERSION=0.2.2
-ARG WHEEL_NAME=actinia_statistic_plugin-${PLUGIN_VERSION}-py2.py3-none-any.whl
+# install actinia plugins
+RUN pip install actinia-statistic-plugin==0.3.1 \
+    && pip install actinia-satellite-plugin==0.2.1 \
+    && pip install actinia-metadata-plugin==1.0.4 \
+    && pip install actinia-module-plugin==2.8.0 \
+    && pip install actinia-stac-plugin==0.3.1 \
+    && pip install actinia-tiling-plugin==1.1.1 \
+    && pip install actinia-parallel-plugin==1.1.2
+# Install example plugin (not on PyPI)
+ARG PLUGIN_VERSION=1.0.0
+ARG WHEEL_NAME=actinia_example_plugin-${PLUGIN_VERSION}-py3-none-any.whl
 RUN curl -L --output /build/${WHEEL_NAME} \
-    https://github.com/actinia-org/actinia_statistic_plugin/releases/download/${PLUGIN_VERSION}/${WHEEL_NAME}
+    https://github.com/actinia-org/actinia-example-plugin/releases/download/${PLUGIN_VERSION}/${WHEEL_NAME}
 
-ARG PLUGIN_VERSION=0.1.2
-ARG WHEEL_NAME=actinia_satellite_plugin-${PLUGIN_VERSION}-py2.py3-none-any.whl
-RUN curl -L --output /build/${WHEEL_NAME} \
-    https://github.com/actinia-org/actinia_satellite_plugin/releases/download/${PLUGIN_VERSION}/${WHEEL_NAME}
-
-ARG PLUGIN_VERSION=1.0.3
-ARG WHEEL_NAME=actinia_metadata_plugin.wsgi-${PLUGIN_VERSION}-py2.py3-none-any.whl
-RUN curl -L --output /build/${WHEEL_NAME} \
-    https://github.com/actinia-org/actinia-metadata-plugin/releases/download/${PLUGIN_VERSION}/${WHEEL_NAME}
-
-ARG PLUGIN_VERSION=2.7.0
-ARG WHEEL_NAME=actinia_module_plugin-${PLUGIN_VERSION}-py3-none-any.whl
-RUN curl -L --output /build/${WHEEL_NAME} \
-    https://github.com/actinia-org/actinia-module-plugin/releases/download/${PLUGIN_VERSION}/${WHEEL_NAME}
-
-ARG PLUGIN_VERSION=0.2.1
-ARG WHEEL_NAME=actinia_stac_plugin.wsgi-${PLUGIN_VERSION}-py2.py3-none-any.whl
-RUN curl -L --output /build/${WHEEL_NAME} \
-    https://github.com/actinia-org/actinia-stac-plugin/releases/download/${PLUGIN_VERSION}/${WHEEL_NAME}
-
-ARG PLUGIN_VERSION=1.0.2
-ARG WHEEL_NAME=actinia_tiling_plugin.wsgi-${PLUGIN_VERSION}-py2.py3-none-any.whl
-RUN curl -L --output /build/${WHEEL_NAME} \
-    https://github.com/actinia-org/actinia-tiling-plugin/releases/download/${PLUGIN_VERSION}/${WHEEL_NAME}
-
-ENV ACTINIA_API_VERSION=3.7.0
-ARG WHEEL_NAME=actinia_api-${ACTINIA_API_VERSION}-py3-none-any.whl
-RUN curl -L --output /build/${WHEEL_NAME} \
-    https://github.com/actinia-org/actinia-api/releases/download/${ACTINIA_API_VERSION}/${WHEEL_NAME}
-
-ARG WHEEL_NAME=actinia_core-${ACTINIA_CORE_VERSION}-py3-none-any.whl
-RUN curl -L --output /build/${WHEEL_NAME} \
-    https://github.com/actinia-org/actinia-core/releases/download/${ACTINIA_CORE_VERSION}/${WHEEL_NAME}
-
-# Install actinia-core and plugins
-# Difference to `pip3 install /build/*`: Loop uses already installed
-# dependencies while installing in bulk will update dependencies, even
-# though older ones are already installed.
-RUN for i in /build/*; do pip3 install $i; done
+# install actinia API and core
+RUN pip install actinia-api==3.7.0
+RUN pip install actinia-core==${ACTINIA_CORE_VERSION}
 
 # Copy actinia config file and start scripts + set needed envs
 COPY actinia-alpine/actinia.cfg /etc/default/actinia
@@ -133,9 +106,9 @@ RUN apk add cmake
 RUN mkdir -p /usr/lib/gdalplugins
 RUN git clone https://github.com/OSGeo/gdal-grass.git
 RUN cd gdal-grass \
-&& cmake -B build -DAUTOLOAD_DIR=/usr/lib/gdalplugins -DBUILD_TESTING=OFF \
-&& cmake --build build \
-&& cmake --install build
+    && cmake -B build -DAUTOLOAD_DIR=/usr/lib/gdalplugins -DBUILD_TESTING=OFF \
+    && cmake --build build \
+    && cmake --install build
 RUN cd .. && rm -rf gdal-grass
 
 ENTRYPOINT ["/bin/sh"]

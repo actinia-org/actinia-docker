@@ -1,4 +1,4 @@
-FROM mundialis/actinia:2.10.0
+FROM mundialis/actinia:2.11.0
 # FROM mundialis/actinia:latest
 
 # # Keeps Python from generating .pyc files in the container
@@ -27,10 +27,10 @@ RUN git config --global --add safe.directory /src/actinia*
 WORKDIR /src/actinia_core/
 RUN pip3 install -e .
 
-RUN pip3 uninstall actinia_example_plugin.wsgi -y
-RUN git clone https://github.com/actinia-org/actinia-example-plugin.git /src/actinia-example-plugin
-WORKDIR /src/actinia-example-plugin/
-RUN pip3 install -e .
+# RUN pip3 uninstall actinia_example_plugin.wsgi -y
+# RUN git clone https://github.com/actinia-org/actinia-example-plugin.git /src/actinia-example-plugin
+# WORKDIR /src/actinia-example-plugin/
+# RUN pip3 install -e .
 
 # for actinia plugin development, incomment matching block
 
