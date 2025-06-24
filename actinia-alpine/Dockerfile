@@ -5,7 +5,7 @@ COPY .git /src/actinia-docker/.git
 WORKDIR /src/actinia-docker
 RUN git describe --dirty --tags --long --first-parent > /actinia-docker-version.txt
 
-FROM mundialis/actinia:alpine-dependencies-2025-04-14 as base
+FROM mundialis/actinia:alpine-dependencies-2025-06-14 as base
 FROM osgeo/grass-gis:main-alpine as grass
 FROM mundialis/esa-snap:s1tbx-31e0b3d as snap
 
@@ -19,7 +19,7 @@ ENV GDAL_CACHEMAX=2000
 ENV GRASS_COMPRESSOR=ZSTD
 ENV GRASS_SKIP_MAPSET_OWNER_CHECK 1
 ENV GISBASE ""
-ENV ACTINIA_CORE_VERSION=6.0.1
+ENV ACTINIA_CORE_VERSION=7.0.0
 
 USER root
 
@@ -81,7 +81,7 @@ RUN curl -L --output /build/${WHEEL_NAME} \
     https://github.com/actinia-org/actinia-example-plugin/releases/download/${PLUGIN_VERSION}/${WHEEL_NAME}
 
 # install actinia API and core
-RUN pip install actinia-api==3.7.0
+RUN pip install actinia-api==3.8.0
 RUN pip install actinia-core==${ACTINIA_CORE_VERSION}
 
 # Copy actinia config file and start scripts + set needed envs
