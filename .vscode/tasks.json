@@ -96,6 +96,21 @@
 					//     "permissions": "rw"
 					// },
 					// {
+					// 	"localPath": "${workspaceFolder}/actinia-grassdata-management-plugin/",
+					//     "containerPath": "/src/actinia-grassdata-management-plugin/",
+					//     "permissions": "rw"
+					// },
+					// {
+					// 	"localPath": "${workspaceFolder}/actinia-processing-lib/",
+					//     "containerPath": "/src/actinia-processing-lib/",
+					//     "permissions": "rw"
+					// },
+					// {
+					// 	"localPath": "${workspaceFolder}/actinia-rest-lib/",
+					//     "containerPath": "/src/actinia-rest-lib/",
+					//     "permissions": "rw"
+					// },
+					// {
 					// 	"localPath": "${workspaceFolder}/actinia-metadata-plugin/",
 					//     "containerPath": "/src/actinia-metadata-plugin/",
 					//     "permissions": "rw"
@@ -134,7 +149,7 @@
 					// 	"localPath": "${workspaceFolder}/actinia-api/",
 					//     "containerPath": "/src/actinia-api/",
 					//     "permissions": "rw"
-					// }
+					// },
 				]
 			}
 		}
