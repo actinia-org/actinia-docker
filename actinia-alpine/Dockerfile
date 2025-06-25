@@ -74,7 +74,7 @@ RUN pip install actinia-grassdata-management-plugin==1.0.0 \
     && pip install actinia-satellite-plugin==0.3.0 \
     && pip install actinia-stac-plugin==0.4.0 \
     && pip install actinia-statistic-plugin==0.4.0 \
-    && pip install actinia-tiling-plugin==1.2.0 \
+    && pip install actinia-tiling-plugin==1.2.0
 # Install example plugin (not on PyPI)
 ARG PLUGIN_VERSION=1.0.0
 ARG WHEEL_NAME=actinia_example_plugin-${PLUGIN_VERSION}-py3-none-any.whl
