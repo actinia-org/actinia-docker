@@ -15,11 +15,14 @@ services:
       - ./actinia-data/resources:/actinia_core/resources
       - ../actinia-core:/src/actinia_core/.
       - ../actinia-example-plugin/:/src/actinia-example-plugin/.
-      # - ../actinia_statistic_plugin/:/src/actinia_statistic_plugin/.
+      # - ../actinia-api:/src/actinia-api/.
+      # - ../actinia-grassdata-management-plugin:/src/actinia-grassdata-management-plugin/.
       # - ../actinia-metadata-plugin/:/src/actinia-metadata-plugin/.
       # - ../actinia-module-plugin/:/src/actinia-module-plugin/.
       # - ../actinia-stac-plugin/:/src/actinia-stac-plugin/.
-      # - ../actinia-api:/src/actinia-api/.
+      # - ../actinia_statistic_plugin/:/src/actinia_statistic_plugin/.
+      # - ../actinia-processing-lib:/src/actinia-processing-lib/.
+      # - ../actinia-rest-lib:/src/actinia-rest-lib/.
     ports:
       - "8088:8088"
     depends_on:
