@@ -1,63 +1,52 @@
-FROM osgeo/grass-gis:current-ubuntu
+# syntax=docker/dockerfile:1.19@sha256:b6afd42430b15f2d2a4c5a02b919e98a525b785b1aaff16747d2f623364e39b6
 
-# based on GRASS GIS releasebranch_8_3 (grass)
-# for most recent GRASS GIS, change base image to
-# FROM osgeo/grass-gis:main-ubuntu
+# based on GRASS GIS releasebranch_8_4 (grass)
+# for most recent GRASS GIS, change branch to main
 
-LABEL authors="Carmen Tawalika,Anika Weinmann,Markus Neteler,Sören Gebbert"
-LABEL maintainer="tawalika@mundialis.de,weinmann@mundialis.de,neteler@mundialis.de,soerengebbert@gmail.com"
+ARG BRANCH=releasebranch_8_4
 
+FROM osgeo/grass-gis:${BRANCH}-ubuntu AS version_info
+COPY .git /src/actinia-docker/.git
+WORKDIR /src/actinia-docker
+RUN git describe --dirty --tags --long --first-parent > /actinia-docker-version.txt
+
+
+# FROM osgeo/grass-gis:${BRANCH}-ubuntu AS grass
+FROM osgeo/grass-gis:${BRANCH}-ubuntu AS grass
+
+# FROM osgeo/grass-gis:latest-ubuntu
+
+ENV LC_ALL="en_US.UTF-8"
 ENV GDAL_CACHEMAX=2000
 ENV GRASS_COMPRESSOR=ZSTD
+ENV GRASS_SKIP_MAPSET_OWNER_CHECK=1
+ENV GISBASE=""
+ENV ACTINIA_CORE_VERSION=7.0.1
 
 USER root
 
 # Install dependencies and tools
 RUN apt-get update && apt-get upgrade -y && \
     apt-get install -y --no-install-recommends --no-install-suggests \
-    # gnutls-bin \
-    # libgnutls28-dev \
-    # ruby \
-    build-essential \
-    bzip2 \
-    curl \
-    git \
-    language-pack-en-base \
-    libcurl4-gnutls-dev \
-    libpython3-all-dev \
-    moreutils \
-    python3 \
-    python3-dateutil \
-    python3-dev \
-    python3-gdal \
-    python3-magic \
-    python3-pip \
-    python3-ply \
+    default-jre \
     rsync \
-    subversion \
-    unzip \
-    vim \
-    wget \
-    zip \
     && apt-get autoremove -y \
-    && apt-get clean -y
+    && apt-get clean all \
+    && rm -rf /var/lib/apt/lists/* \
+    # Create the database directories
+    && mkdir -p /actinia_core/grassdb \
+    && mkdir -p /actinia_core/resources \
+    && mkdir -p /actinia_core/workspace/tmp \
+    && mkdir -p /actinia_core/workspace/temp_db \
+    && mkdir -p /actinia_core/workspace/actinia \
+    && mkdir -p /actinia_core/workspace/download_cache \
+    && mkdir -p /actinia_core/userdata
 
-ENV LC_ALL "en_US.UTF-8"
-ENV GRASS_SKIP_MAPSET_OWNER_CHECK 1
-
-# Create the database directories
-RUN mkdir -p /actinia_core/grassdb && \
-    mkdir -p /actinia_core/resources && \
-    mkdir -p /actinia_core/workspace/tmp && \
-    mkdir -p /actinia_core/workspace/temp_db && \
-    mkdir -p /actinia_core/workspace/actinia && \
-    mkdir -p /actinia_core/workspace/download_cache && \
-    mkdir -p /actinia_core/userdata
-
-# Create generic GRASS GIS binary name regardless of version number
-RUN ln -sf `find /usr/local/bin -name "grass??" | sort | tail -n 1` /usr/local/bin/grass
+# Create generic GRASS GIS binary name regardless of version number and
 # Create a generic link to GRASS GIS libs (simplifies actinia configuration)
-RUN ln -s `grass --config path` /usr/local/grass
+RUN ln -s "$(grass --config path)" /usr/local/grass
+
+FROM grass AS addons
 # show installed versions
 RUN grass --tmp-project EPSG:4326 --exec g.version -rge && \
     pdal --version && \
@@ -68,71 +57,151 @@ RUN grass --tmp-project EPSG:4326 --exec g.version -rge && \
 # -s uses $GISBASE instead of $GRASS_ADDON_BASE
 WORKDIR /src
 
-# git clone various openEO plugins (local checkout due to non-standard repo structure)
-RUN git clone https://github.com/mundialis/openeo-addons.git
-RUN git clone https://github.com/NVE/actinia_modules_nve.git /src/nve-addons
 
 # loop over addon list
 COPY grass_addons_list.csv /src/grass_addons_list.csv
+COPY install_addons.sh /src/install_addons.sh
 
-RUN while IFS=, read -r ADDON SERVER; do if [[ $ADDON != "#*" ]]; then unset URL; test -z $SERVER || URL="url=$SERVER"; grass --tmp-project EPSG:4326 --exec g.extension -s extension=$ADDON $URL;fi;done < /src/grass_addons_list.csv
+# git clone various openEO plugins (local checkout due to non-standard repo structure)
+RUN mkdir /src/grass_addons && \
+    git clone https://github.com/osgeo/grass-addons.git && \
+    git clone https://github.com/mundialis/openeo-addons.git && \
+    git clone https://github.com/NVE/actinia_modules_nve.git /src/nve-addons && \
+    bash install_addons.sh /src/grass_addons_list.csv && \
+    rm -r openeo-addons && \
+    rm -r grass-addons && \
+    rm -r nve-addons
 
+FROM grass AS esa_snap
+# Set SNAP and JAVA version
+ARG SNAPVER=12
+ENV JAVA_HOME="/usr/lib/jvm/java-21-openjdk-amd64"
 
-# install SNAPPY
+WORKDIR /src
+
 # SNAP wants the current folder '.' included in LD_LIBRARY_PATH
-ENV LD_LIBRARY_PATH ".:$LD_LIBRARY_PATH"
-RUN apt-get install default-jdk maven -y
-ENV JAVA_HOME "/usr/lib/jvm/java-11-openjdk-amd64"
-RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 1
-COPY actinia-ubuntu/snap /src/snap
-RUN bash /src/snap/install.sh
-RUN update-alternatives --remove python /usr/bin/python3
+ENV LD_LIBRARY_PATH=".:$LD_LIBRARY_PATH"
+# Install maven as build tool for SNAP
+RUN apt-get update -y \
+    && apt-get install -y  --no-install-recommends --no-install-suggests \
+    default-jdk \
+    maven && \
+    apt-get autoremove -y && \
+    apt-get clean -y && \
+    # Create SNAP install directory
+    mkdir -p /src/snap
+
+# hadolint ignore=SC2016
+RUN wget -q -O /src/snap/esa-snap_all_linux-${SNAPVER}.0.0.sh \
+	  "https://download.esa.int/step/snap/${SNAPVER}.0/installers/esa-snap_all_linux-${SNAPVER}.0.0.sh" \
+    && sh /src/snap/esa-snap_all_linux-${SNAPVER}.0.0.sh -q -varfile /src/snap/response.varfile \
+    && sed -i 's+jdkhome="./jre"+jdkhome="$JAVA_HOME"+g' /usr/local/snap/etc/snap.conf \
+    && /usr/local/snap/bin/snap --nosplash --nogui --modules --update-all \
+    && rm -rf /usr/local/snap/jre \
+    && rm -rf /src/snap
+
+FROM grass AS actinia
+
+ENV JAVA_HOME="/usr/lib/jvm/java-21-openjre-amd64"
+
+# Set actinia-docker version
+COPY --from=version_info /actinia-docker-version.txt /
+
+# Get build addons
+COPY --link --from=addons /src/grass_addons /usr/local/grass
+
+# Get ESA SNAP
+COPY --link --from=esa_snap /root/.snap /root/
+COPY --link --from=esa_snap /usr/local/snap /usr/local/
 
 # set link to match actinia default config (needed for tests)
+# and point to system Java JRE in snap.conf
+# hadolint ignore=SC2016
 RUN ln -s /actinia_core /root/actinia
 
-# Install actinia-core
-RUN git clone https://github.com/actinia-org/actinia-core.git /src/actinia_core
-WORKDIR /src/actinia_core
-RUN python3 -m pip install --user --upgrade setuptools wheel
-RUN python3 setup.py sdist bdist_wheel -d /build
-RUN pip3 install /build/*
+# Install actinia-core and plugins with dependencies
+WORKDIR /build
+ARG EXAMPLE_PLUGIN_VERSION=1.1.0
+ENV ACTINIA_CORE_VERSION=7.0.1
+# Install dependencies
+COPY requirements_ubuntu.txt /src/requirements_ubuntu.txt
+RUN echo "Install Python" \
+    && wget --progress="dot:giga" -q https://bootstrap.pypa.io/pip/get-pip.py \
+    && python3 get-pip.py --break-system-packages --no-cache-dir \
+    && rm -r get-pip.py \
+    && python3 -m pip install --break-system-packages --no-cache-dir \
+    -r /src/requirements_ubuntu.txt \
+    # Install actinia-core and plugins
+    && python3 -m pip install --no-cache-dir --break-system-packages \
+    actinia-api==3.8.0 \
+    actinia-core==${ACTINIA_CORE_VERSION} \
+    actinia-grassdata-management-plugin==1.0.0 \
+    actinia-metadata-plugin==1.0.4 \
+    actinia-module-plugin==2.9.0 \
+    actinia-parallel-plugin==1.2.0 \
+    actinia-satellite-plugin==0.3.0 \
+    actinia-stac-plugin==0.4.0 \
+    actinia-statistic-plugin==0.4.0 \
+    actinia-tiling-plugin==1.2.0 \
+    # Install example plugin (not on PyPI)
+    https://github.com/actinia-org/actinia-example-plugin/releases/download/${EXAMPLE_PLUGIN_VERSION}/actinia_example_plugin-${EXAMPLE_PLUGIN_VERSION}-py3-none-any.whl
 
-RUN pip3 install scikit-learn && pip3 install .
-## TODO: fix tests
-#\
-#    && python3 setup.py test
+# Copy actinia config file and start scripts + set needed envs
+COPY actinia-alpine/actinia.cfg /etc/default/actinia
+COPY actinia-alpine/start.sh /src/start.sh
 
-# Install actinia-core plugins
-WORKDIR /src
-RUN git config --global http.sslVerify false
-RUN git clone https://github.com/actinia-org/actinia-statistic-plugin.git /src/actinia_statistic_plugin
-WORKDIR /src/actinia_statistic_plugin
-RUN pip3 install -r requirements.txt && pip3 install .
-## TODO: fix tests
-#\
-#    && python3 setup.py test
+# Set with "$(git log -n 1 --pretty=format:'%h')"
+ARG REVISION=latest
+# Set with "$(date +'%Y-%m-%dT%H:%M:%S%:z')"
+ARG BUILD_DATE
+ARG BRANCH
+ARG SNAPVER=12
+ARG TITLE="actinia ${ACTINIA_CORE_VERSION}"
+ARG URL="https://github.com/actinia-org/actinia-docker/blob/main/actinia-ubuntu/Dockerfile"
+ARG DOCUMENTATION="https://github.com/actinia-org/actinia-docker/tree/main/actinia-ubuntu/README.md"
+ARG SOURCE="https://github.com/actinia-org/actinia-docker/tree/main/actinia-ubuntu"
+ARG AUTHORS="Carmen Tawalika,Anika Weinmann,Markus Neteler,Sören Gebbert,Stefan Blumentrath"
+ARG MAINTAINERS="tawalika@mundialis.de,weinmann@mundialis.de,neteler@mundialis.de,soerengebbert@gmail.com"
+ARG VENDOR="Actinia org (https://actinia.org) and GRASS Development Team (https://grass.osgeo.org)"
+ARG LICENSE="GPL-2.0-or-later"
+ARG BASE_NAME="osgeo/grass-gis:${BRANCH}-ubuntu"
+ARG DESCRIPTION="actinia - The geoprocessing platform actinia analyses large volumes of Earth-observation and geodata in the cloud "
+ARG DESCRIPTION="$DESCRIPTION (https://github.com/actinia-org)."
+ARG DESCRIPTION="$DESCRIPTION Build with:"
+ARG DESCRIPTION="$DESCRIPTION GRASS ${BRANCH},"
+ARG DESCRIPTION="$DESCRIPTION ESA SNAP ${SNAPVER}"
+ARG REF_NAME="actinia"
 
-# Reduce the image size
-RUN apt-get autoremove -y
-RUN apt-get clean -y
-RUN rm -rf /src/snap
+# Add OCI annotations (see: https://github.com/opencontainers/image-spec/blob/main/annotations.md)
+LABEL org.opencontainers.image.authors="$AUTHORS" \
+      org.opencontainers.image.vendor="$VENDOR" \
+      org.opencontainers.image.licenses="$LICENSE" \
+      org.opencontainers.image.created="$BUILD_DATE" \
+      org.opencontainers.image.revision="$REVISION" \
+      org.opencontainers.image.url="$URL" \
+      org.opencontainers.image.source="$SOURCE" \
+      org.opencontainers.image.version="$ACTINIA_CORE_VERSION" \
+      org.opencontainers.image.title="$TITLE" \
+      org.opencontainers.image.description="$DESCRIPTION" \
+      org.opencontainers.image.base.name="$BASE_NAME" \
+      org.opencontainers.image.ref.name="$REF_NAME" \
+      org.opencontainers.image.documentation="$DOCUMENTATION" \
+      maintainers="$MAINTAINERS"
 
 # Data directory
 WORKDIR /grassdb
 VOLUME /grassdb
 
-# Copy actinia config file and start scripts
-COPY actinia-ubuntu/actinia.cfg /etc/default/actinia
-COPY actinia-ubuntu/start.sh /src/start.sh
+# Test SNAP GPT
+RUN gpt -h
 
 # Set actinia config file for testing
-ENV ACTINIA_CUSTOM_TEST_CFG /etc/default/actinia
+ENV ACTINIA_CUSTOM_TEST_CFG=/etc/default/actinia
 
 ENTRYPOINT ["/bin/bash"]
 CMD ["/src/start.sh"]
 
-ENV GISBASE ""
+ENV GISBASE=""
 
 EXPOSE 8088
 EXPOSE 9191
