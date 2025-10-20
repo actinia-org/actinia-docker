@@ -1,3 +1,4 @@
+#! /bin/bash
 
 while IFS=, read -r ADDON SERVER
 do
@@ -6,12 +7,10 @@ do
   if [[ $ADDON = \#* ]] ; then
     continue
   fi
-
+  echo "Installing addon: $ADDON"
   if [ -z $SERVER ] ; then
-      # Split addon name into components
-      IFS=. ADDON_COMPONENTS=(${ADDON##*-})
-      # Extract the first character
-      ADDON_CLASS_SHORT="${ADDON_COMPONENTS[0]}"
+      # Extract the first character(s) for the addon class
+      ADDON_CLASS_SHORT=$(echo $ADDON | cut -f1 -d".")
       case "$ADDON_CLASS_SHORT" in
         d)
             ADDON_CLASS="display"
@@ -41,8 +40,8 @@ do
             ADDON_CLASS="vector"
             ;;
       esac
-      grass --tmp-project EPSG:4326 --exec g.extension prefix=/src/grass_addons extension=$ADDON url="/src/grass_addons/src/${ADDON_CLASS}/${ADDON}"
+      grass --tmp-project EPSG:4326 --exec g.extension prefix=/src/grass_addons_build extension=$ADDON url="/src/grass-addons/src/${ADDON_CLASS}/${ADDON}"
   else
-      grass --tmp-project EPSG:4326 --exec g.extension prefix=/src/grass_addons extension=$ADDON url="$SERVER"
+      grass --tmp-project EPSG:4326 --exec g.extension prefix=/src/grass_addons_build extension=$ADDON url="$SERVER"
   fi
 done < "$1"
