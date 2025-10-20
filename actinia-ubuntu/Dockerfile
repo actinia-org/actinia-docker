@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1.19@sha256:b6afd42430b15f2d2a4c5a02b919e98a525b785b1aaff16747d2f623364e39b6
 
-# based on GRASS GIS releasebranch_8_4 (grass)
-# for most recent GRASS GIS, change branch to main
+# based on GRASS releasebranch_8_4 (grass)
+# for most recent GRASS, change branch to main
 
 ARG BRANCH=releasebranch_8_4
 
@@ -23,10 +23,10 @@ ENV ACTINIA_CORE_VERSION=7.0.1
 
 USER root
 
-# Install dependencies and tools
+# Install dependencies (JRE headless with recomended packages) and tools
 RUN apt-get update && apt-get upgrade -y && \
-    apt-get install -y --no-install-recommends --no-install-suggests \
-    default-jre \
+    apt-get install -y --no-install-suggests \
+    default-jre-headless \
     rsync \
     && apt-get autoremove -y \
     && apt-get clean all \
@@ -40,8 +40,8 @@ RUN apt-get update && apt-get upgrade -y && \
     && mkdir -p /actinia_core/workspace/download_cache \
     && mkdir -p /actinia_core/userdata
 
-# Create generic GRASS GIS binary name regardless of version number and
-# Create a generic link to GRASS GIS libs (simplifies actinia configuration)
+# Create generic GRASS binary name regardless of version number and
+# Create a generic link to GRASS libs (simplifies actinia configuration)
 RUN ln -s "$(grass --config path)" /usr/local/grass
 
 FROM grass AS addons
@@ -50,7 +50,7 @@ RUN grass --tmp-project EPSG:4326 --exec g.version -rge && \
     pdal --version && \
     python3 --version
 
-# Install selected GRASS GIS addons
+# Install selected GRASS addons
 WORKDIR /src
 
 # Get addon list and install script
@@ -61,6 +61,7 @@ COPY install_addons.sh /src/install_addons.sh
 # use local checkout due to non-standard repo structure and for performance
 # ToDo: consider pinning AddOns with commit-hash or tag
 RUN mkdir /src/grass_addons && \
+    mkdir /src/grass_addons_build && \
     git clone --depth=1 https://github.com/osgeo/grass-addons.git && \
     git clone --depth=1 https://github.com/mundialis/openeo-addons.git && \
     git clone --depth=1 https://github.com/NVE/actinia_modules_nve.git /src/nve-addons && \
@@ -78,16 +79,17 @@ WORKDIR /src
 
 # SNAP wants the current folder '.' included in LD_LIBRARY_PATH
 ENV LD_LIBRARY_PATH=".:$LD_LIBRARY_PATH"
-# Install maven as build tool for SNAP
+# Install JRE (with recomended packages and maven as build tool for SNAP
 RUN apt-get update -y \
-    && apt-get install -y  --no-install-recommends --no-install-suggests \
-    default-jdk \
+    && apt-get install -y --no-install-suggests \
+    default-jdk-headless \
     maven && \
     apt-get autoremove -y && \
     apt-get clean -y && \
     # Create SNAP install directory
     mkdir -p /src/snap
 
+COPY actinia-ubuntu/snap/response.varfile ./snap/
 # hadolint ignore=SC2016
 RUN wget -q -O /src/snap/esa-snap_all_linux-${SNAPVER}.0.0.sh \
 	  "https://download.esa.int/step/snap/${SNAPVER}.0/installers/esa-snap_all_linux-${SNAPVER}.0.0.sh" \
@@ -105,7 +107,7 @@ ENV JAVA_HOME="/usr/lib/jvm/java-21-openjre-amd64"
 COPY --from=version_info /actinia-docker-version.txt /
 
 # Get build addons
-COPY --link --from=addons /src/grass_addons /usr/local/grass
+COPY --link --from=addons /src/grass_addons_build /usr/local/grass
 
 # Get ESA SNAP
 COPY --link --from=esa_snap /root/.snap /root/
@@ -187,6 +189,11 @@ VOLUME /grassdb
 
 # Test SNAP GPT
 RUN gpt -h
+
+# Test addon installation
+RUN grass --tmp-project EPSG:4326 --exec i.sentinel1.pyrosargeocode --h
+RUN grass --tmp-project EPSG:4326 --exec v.in.geojson --h
+RUN grass --tmp-project EPSG:4326 --exec r.hants --h
 
 # Set actinia config file for testing
 ENV ACTINIA_CUSTOM_TEST_CFG=/etc/default/actinia
