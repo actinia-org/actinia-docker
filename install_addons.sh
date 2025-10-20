@@ -3,14 +3,31 @@ while IFS=, read -r ADDON SERVER
 do
   unset URL
   if [ -z $SERVER ] ; then
-      ADDON_CLASS_SHORT="${ADDON:0:1}"  # Extract the first character
-
+      # Split addon name into components
+      IFS=. ADDON_COMPONENTS=(${ADDON##*-})
+      # Extract the first character
+      ADDON_CLASS_SHORT="${ADDON_COMPONENTS[0]}"
       case "$ADDON_CLASS_SHORT" in
-        r)
-            ADDON_CLASS="raster"
+        d)
+            ADDON_CLASS="display"
+            ;;
+        db)
+            ADDON_CLASS="db"
+            ;;
+        g)
+            ADDON_CLASS="general"
             ;;
         i)
             ADDON_CLASS="imagery"
+            ;;
+        m)
+            ADDON_CLASS="misc"
+            ;;
+        r)
+            ADDON_CLASS="raster"
+            ;;
+        r3)
+            ADDON_CLASS="raster3d"
             ;;
         t)
             ADDON_CLASS="temporal"
