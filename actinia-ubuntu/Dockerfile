@@ -16,10 +16,8 @@ FROM osgeo/grass-gis:${BRANCH}-ubuntu AS grass
 
 # FROM osgeo/grass-gis:latest-ubuntu
 
-ENV LC_ALL="en_US.UTF-8"
 ENV GDAL_CACHEMAX=2000
 ENV GRASS_COMPRESSOR=ZSTD
-ENV GRASS_SKIP_MAPSET_OWNER_CHECK=1
 ENV GISBASE=""
 ENV ACTINIA_CORE_VERSION=7.0.1
 
@@ -52,21 +50,20 @@ RUN grass --tmp-project EPSG:4326 --exec g.version -rge && \
     pdal --version && \
     python3 --version
 
-# Install selected GRASS GIS addons. Done with -s, so it can be used by actinia
-# https://grass.osgeo.org/grass-stable/manuals/g.extension.html
-# -s uses $GISBASE instead of $GRASS_ADDON_BASE
+# Install selected GRASS GIS addons
 WORKDIR /src
 
-
-# loop over addon list
+# Get addon list and install script
 COPY grass_addons_list.csv /src/grass_addons_list.csv
 COPY install_addons.sh /src/install_addons.sh
 
-# git clone various openEO plugins (local checkout due to non-standard repo structure)
+# git clone various openEO plugins
+# use local checkout due to non-standard repo structure and for performance
+# ToDo: consider pinning AddOns with commit-hash or tag
 RUN mkdir /src/grass_addons && \
-    git clone https://github.com/osgeo/grass-addons.git && \
-    git clone https://github.com/mundialis/openeo-addons.git && \
-    git clone https://github.com/NVE/actinia_modules_nve.git /src/nve-addons && \
+    git clone --depth=1 https://github.com/osgeo/grass-addons.git && \
+    git clone --depth=1 https://github.com/mundialis/openeo-addons.git && \
+    git clone --depth=1 https://github.com/NVE/actinia_modules_nve.git /src/nve-addons && \
     bash install_addons.sh /src/grass_addons_list.csv && \
     rm -r openeo-addons && \
     rm -r grass-addons && \
@@ -127,9 +124,9 @@ ENV ACTINIA_CORE_VERSION=7.0.1
 COPY requirements_ubuntu.txt /src/requirements_ubuntu.txt
 RUN echo "Install Python" \
     && wget --progress="dot:giga" -q https://bootstrap.pypa.io/pip/get-pip.py \
-    && python3 get-pip.py --break-system-packages --no-cache-dir \
+    && python3 get-pip.py --no-cache-dir --break-system-packages \
     && rm -r get-pip.py \
-    && python3 -m pip install --break-system-packages --no-cache-dir \
+    && python3 -m pip install --no-cache-dir --break-system-packages \
     -r /src/requirements_ubuntu.txt \
     # Install actinia-core and plugins
     && python3 -m pip install --no-cache-dir --break-system-packages \
