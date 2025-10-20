@@ -2,6 +2,11 @@
 while IFS=, read -r ADDON SERVER
 do
   unset URL
+  # Skip comment lines and commented out addons
+  if [[ $ADDON = \#* ]] ; then
+    continue
+  fi
+
   if [ -z $SERVER ] ; then
       # Split addon name into components
       IFS=. ADDON_COMPONENTS=(${ADDON##*-})
