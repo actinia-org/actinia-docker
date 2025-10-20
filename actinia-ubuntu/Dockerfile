@@ -8,7 +8,7 @@ ARG BRANCH=releasebranch_8_4
 FROM osgeo/grass-gis:${BRANCH}-ubuntu AS version_info
 COPY .git /src/actinia-docker/.git
 WORKDIR /src/actinia-docker
-RUN git describe --dirty --tags --long --first-parent > /actinia-docker-version.txt
+RUN git describe --dirty --tags --always --long --first-parent > /actinia-docker-version.txt
 
 
 # FROM osgeo/grass-gis:${BRANCH}-ubuntu AS grass
@@ -120,15 +120,11 @@ RUN ln -s /actinia_core /root/actinia
 WORKDIR /build
 ARG EXAMPLE_PLUGIN_VERSION=1.1.0
 ENV ACTINIA_CORE_VERSION=7.0.1
-# Install dependencies
-COPY requirements_ubuntu.txt /src/requirements_ubuntu.txt
+# Install actinia-core and plugins
 RUN echo "Install Python" \
     && wget --progress="dot:giga" -q https://bootstrap.pypa.io/pip/get-pip.py \
     && python3 get-pip.py --no-cache-dir --break-system-packages \
     && rm -r get-pip.py \
-    && python3 -m pip install --no-cache-dir --break-system-packages \
-    -r /src/requirements_ubuntu.txt \
-    # Install actinia-core and plugins
     && python3 -m pip install --no-cache-dir --break-system-packages \
     actinia-api==3.8.0 \
     actinia-core==${ACTINIA_CORE_VERSION} \
