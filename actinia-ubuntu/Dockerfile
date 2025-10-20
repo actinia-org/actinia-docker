@@ -16,10 +16,11 @@ FROM osgeo/grass-gis:${BRANCH}-ubuntu AS grass
 
 # FROM osgeo/grass-gis:latest-ubuntu
 
-ENV GDAL_CACHEMAX=2000
-ENV GRASS_COMPRESSOR=ZSTD
-ENV GISBASE=""
-ENV ACTINIA_CORE_VERSION=7.0.1
+ENV GDAL_CACHEMAX=2000 \
+    GRASS_COMPRESSOR=ZSTD \
+    GISBASE="" \
+    ESA_SNAP_VERSION=12 \
+    ACTINIA_CORE_VERSION=7.0.1
 
 USER root
 
@@ -71,8 +72,7 @@ RUN mkdir /src/grass_addons && \
     rm -r nve-addons
 
 FROM grass AS esa_snap
-# Set SNAP and JAVA version
-ARG SNAPVER=12
+# Set JAVA _HOME
 ENV JAVA_HOME="/usr/lib/jvm/java-21-openjdk-amd64"
 
 WORKDIR /src
@@ -91,37 +91,40 @@ RUN apt-get update -y \
 
 COPY actinia-ubuntu/snap/response.varfile ./snap/
 # hadolint ignore=SC2016
-RUN wget -q -O /src/snap/esa-snap_all_linux-${SNAPVER}.0.0.sh \
-	  "https://download.esa.int/step/snap/${SNAPVER}.0/installers/esa-snap_all_linux-${SNAPVER}.0.0.sh" \
-    && sh /src/snap/esa-snap_all_linux-${SNAPVER}.0.0.sh -q -varfile /src/snap/response.varfile \
+RUN wget -q -O /src/snap/esa-snap_all_linux-${ESA_SNAP_VERSION}.0.0.sh \
+	  "https://download.esa.int/step/snap/${ESA_SNAP_VERSION}.0/installers/esa-snap_all_linux-${ESA_SNAP_VERSION}.0.0.sh" \
+    && sh /src/snap/esa-snap_all_linux-${ESA_SNAP_VERSION}.0.0.sh -q -varfile /src/snap/response.varfile \
     && sed -i 's+jdkhome="./jre"+jdkhome="$JAVA_HOME"+g' /usr/local/snap/etc/snap.conf \
     && /usr/local/snap/bin/snap --nosplash --nogui --modules --update-all \
+    && rm -rf /usr/local/snap/*/update/backup/* \
     && rm -rf /usr/local/snap/jre \
     && rm -rf /src/snap
 
 FROM grass AS actinia
 
-ENV JAVA_HOME="/usr/lib/jvm/java-21-openjre-amd64"
-
 # Set actinia-docker version
-COPY --from=version_info /actinia-docker-version.txt /
+COPY --link --from=version_info /actinia-docker-version.txt /
 
 # Get build addons
 COPY --link --from=addons /src/grass_addons_build /usr/local/grass
 
 # Get ESA SNAP
 COPY --link --from=esa_snap /root/.snap /root/
-COPY --link --from=esa_snap /usr/local/snap /usr/local/
+COPY --link --from=esa_snap /usr/local/snap /usr/local/snap
 
-# set link to match actinia default config (needed for tests)
-# and point to system Java JRE in snap.conf
-# hadolint ignore=SC2016
+
+# Add ESA SNAP to PATH, point to system Java JRE in snap.conf
+# and point to actinia config file for testing
+ENV JAVA_HOME="/usr/lib/jvm/java-21-openjre-amd64" \
+    PATH="/usr/local/snap/bin:${PATH}" \
+    ACTINIA_CUSTOM_TEST_CFG=/etc/default/actinia
+
+# Set link to match actinia default config (needed for tests)
 RUN ln -s /actinia_core /root/actinia
 
 # Install actinia-core and plugins with dependencies
 WORKDIR /build
 ARG EXAMPLE_PLUGIN_VERSION=1.1.0
-ENV ACTINIA_CORE_VERSION=7.0.1
 # Install actinia-core and plugins
 RUN echo "Install Python" \
     && wget --progress="dot:giga" -q https://bootstrap.pypa.io/pip/get-pip.py \
@@ -150,7 +153,6 @@ ARG REVISION=latest
 # Set with "$(date +'%Y-%m-%dT%H:%M:%S%:z')"
 ARG BUILD_DATE
 ARG BRANCH
-ARG SNAPVER=12
 ARG TITLE="actinia ${ACTINIA_CORE_VERSION}"
 ARG URL="https://github.com/actinia-org/actinia-docker/blob/main/actinia-ubuntu/Dockerfile"
 ARG DOCUMENTATION="https://github.com/actinia-org/actinia-docker/tree/main/actinia-ubuntu/README.md"
@@ -164,7 +166,7 @@ ARG DESCRIPTION="actinia - The geoprocessing platform actinia analyses large vol
 ARG DESCRIPTION="$DESCRIPTION (https://github.com/actinia-org)."
 ARG DESCRIPTION="$DESCRIPTION Build with:"
 ARG DESCRIPTION="$DESCRIPTION GRASS ${BRANCH},"
-ARG DESCRIPTION="$DESCRIPTION ESA SNAP ${SNAPVER}"
+ARG DESCRIPTION="$DESCRIPTION ESA SNAP ${ESA_SNAP_VERSION}"
 ARG REF_NAME="actinia"
 
 # Add OCI annotations (see: https://github.com/opencontainers/image-spec/blob/main/annotations.md)
@@ -194,9 +196,6 @@ RUN gpt -h
 RUN grass --tmp-project EPSG:4326 --exec i.sentinel1.pyrosargeocode --h
 RUN grass --tmp-project EPSG:4326 --exec v.in.geojson --h
 RUN grass --tmp-project EPSG:4326 --exec r.hants --h
-
-# Set actinia config file for testing
-ENV ACTINIA_CUSTOM_TEST_CFG=/etc/default/actinia
 
 ENTRYPOINT ["/bin/bash"]
 CMD ["/src/start.sh"]
