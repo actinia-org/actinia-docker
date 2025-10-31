@@ -19,7 +19,7 @@ FROM osgeo/grass-gis:${BRANCH}-ubuntu AS grass
 ENV GDAL_CACHEMAX=2000 \
     GRASS_COMPRESSOR=ZSTD \
     GISBASE="" \
-    ESA_SNAP_VERSION=12 \
+    ESA_SNAP_VERSION=13 \
     ACTINIA_CORE_VERSION=7.0.1
 
 USER root
@@ -94,10 +94,10 @@ COPY actinia-ubuntu/snap/response.varfile ./snap/
 RUN wget -q -O /src/snap/esa-snap_all_linux-${ESA_SNAP_VERSION}.0.0.sh \
 	  "https://download.esa.int/step/snap/${ESA_SNAP_VERSION}.0/installers/esa-snap_all_linux-${ESA_SNAP_VERSION}.0.0.sh" \
     && sh /src/snap/esa-snap_all_linux-${ESA_SNAP_VERSION}.0.0.sh -q -varfile /src/snap/response.varfile \
-    && sed -i 's+jdkhome="./jre"+jdkhome="$JAVA_HOME"+g' /usr/local/snap/etc/snap.conf \
-    && /usr/local/snap/bin/snap --nosplash --nogui --modules --update-all \
-    && rm -rf /usr/local/snap/*/update/backup/* \
-    && rm -rf /usr/local/snap/jre \
+    && sed -i 's+jdkhome="./jre"+jdkhome="$JAVA_HOME"+g' /usr/local/esa-snap/etc/snap.conf \
+    && /usr/local/esa-snap/bin/snap --nosplash --nogui --modules --update-all \
+    && rm -rf /usr/local/esa-snap/*/update/backup/* \
+    && rm -rf /usr/local/esa-snap/jre \
     && rm -rf /src/snap
 
 FROM grass AS actinia
@@ -116,7 +116,7 @@ COPY --link --from=esa_snap /usr/local/snap /usr/local/snap
 # Add ESA SNAP to PATH, point to system Java JRE in snap.conf
 # and point to actinia config file for testing
 ENV JAVA_HOME="/usr/lib/jvm/java-21-openjre-amd64" \
-    PATH="/usr/local/snap/bin:${PATH}" \
+    PATH="/usr/local/esa-snap/bin:${PATH}" \
     ACTINIA_CUSTOM_TEST_CFG=/etc/default/actinia
 
 # Set link to match actinia default config (needed for tests)
