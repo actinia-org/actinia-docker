@@ -1,8 +1,7 @@
 # syntax=docker/dockerfile:1.19@sha256:b6afd42430b15f2d2a4c5a02b919e98a525b785b1aaff16747d2f623364e39b6
 
-# based on GRASS releasebranch_8_4 (grass)
+# Based on GRASS releasebranch_8_4 (grass)
 # for most recent GRASS, change branch to main
-
 ARG BRANCH=releasebranch_8_4
 
 FROM osgeo/grass-gis:${BRANCH}-ubuntu AS version_info
@@ -11,11 +10,10 @@ WORKDIR /src/actinia-docker
 RUN git describe --dirty --tags --always --long --first-parent > /actinia-docker-version.txt
 
 
-# FROM osgeo/grass-gis:${BRANCH}-ubuntu AS grass
+# Start with selected GRASS image
 FROM osgeo/grass-gis:${BRANCH}-ubuntu AS grass
 
-# FROM osgeo/grass-gis:latest-ubuntu
-
+# Set environment variables
 ENV GDAL_CACHEMAX=2000 \
     GRASS_COMPRESSOR=ZSTD \
     GISBASE="" \
@@ -41,17 +39,17 @@ RUN apt-get update && apt-get upgrade -y && \
     && mkdir -p /actinia_core/workspace/download_cache \
     && mkdir -p /actinia_core/userdata
 
-# Create generic GRASS binary name regardless of version number and
-# Create a generic link to GRASS libs (simplifies actinia configuration)
+# Create a generic GRASS binary name and link to GRASS libs
+# regardless of version number  (simplifies actinia configuration)
 RUN ln -s "$(grass --config path)" /usr/local/grass
 
+# Install required GRASS addons
 FROM grass AS addons
-# show installed versions
+# Show installed versions
 RUN grass --tmp-project EPSG:4326 --exec g.version -rge && \
     pdal --version && \
     python3 --version
 
-# Install selected GRASS addons
 WORKDIR /src
 
 # Get addon list and install script
@@ -71,6 +69,7 @@ RUN mkdir /src/grass_addons && \
     rm -r grass-addons && \
     rm -r nve-addons
 
+# Install ESA SNAP
 FROM grass AS esa_snap
 # Set JAVA _HOME
 ENV JAVA_HOME="/usr/lib/jvm/java-21-openjdk-amd64"
@@ -89,17 +88,12 @@ RUN apt-get update -y \
     # Create SNAP install directory
     mkdir -p /src/snap
 
-COPY actinia-ubuntu/snap/response.varfile ./snap/
-# hadolint ignore=SC2016
-RUN wget -q -O /src/snap/esa-snap_all_linux-${ESA_SNAP_VERSION}.0.0.sh \
-	  "https://download.esa.int/step/snap/${ESA_SNAP_VERSION}.0/installers/esa-snap_all_linux-${ESA_SNAP_VERSION}.0.0.sh" \
-    && sh /src/snap/esa-snap_all_linux-${ESA_SNAP_VERSION}.0.0.sh -q -varfile /src/snap/response.varfile \
-    && sed -i 's+jdkhome="./jre"+jdkhome="$JAVA_HOME"+g' /usr/local/esa-snap/etc/snap.conf \
-    && /usr/local/esa-snap/bin/snap --nosplash --nogui --modules --update-all \
-    && rm -rf /usr/local/esa-snap/*/update/backup/* \
-    && rm -rf /usr/local/esa-snap/jre \
-    && rm -rf /src/snap
+# Run ESA SNAP installation script
+COPY actinia-ubuntu/snap/install.sh /src/snap/install_snap.sh
+COPY actinia-ubuntu/snap/response.varfile /src/snap/response.varfile
+RUN sh /src/snap/install_snap.sh
 
+# Compile final image with actinia
 FROM grass AS actinia
 
 # Set actinia-docker version
@@ -110,7 +104,7 @@ COPY --link --from=addons /src/grass_addons_build /usr/local/grass
 
 # Get ESA SNAP
 COPY --link --from=esa_snap /root/.snap /root/
-COPY --link --from=esa_snap /usr/local/snap /usr/local/snap
+COPY --link --from=esa_snap /usr/local/esa-snap /usr/local/esa-snap
 
 
 # Add ESA SNAP to PATH, point to system Java JRE in snap.conf
