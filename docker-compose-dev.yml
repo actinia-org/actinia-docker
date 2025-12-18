@@ -33,6 +33,7 @@ services:
     -   actinia-dev
 
   valkey:
+    container_name: valkey
     image: valkey/valkey:9.0-alpine
     volumes:
       - ./valkey_data:/data

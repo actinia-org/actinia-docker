@@ -38,6 +38,7 @@
 				]
 			},
 			"dockerRun": {
+				"containerName": "actinia-core",
 				"remove": true,
 				// network is needed when connecting to valkey
 				// while not using docker-compose for startup
