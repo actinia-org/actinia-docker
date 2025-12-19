@@ -1,4 +1,4 @@
-FROM mundialis/actinia:2.12.2
+FROM mundialis/actinia:2.13.0
 # FROM mundialis/actinia:latest
 
 # # Keeps Python from generating .pyc files in the container
