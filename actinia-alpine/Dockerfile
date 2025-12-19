@@ -1,13 +1,13 @@
-FROM alpine:3.21 as version
+FROM alpine:3.23 as version
 RUN apk add git
 
 COPY .git /src/actinia-docker/.git
 WORKDIR /src/actinia-docker
 RUN git describe --dirty --tags --long --first-parent > /actinia-docker-version.txt
 
-FROM mundialis/actinia:alpine-dependencies-2025-11-14 as base
+FROM mundialis/actinia:alpine-dependencies-2025-12-19 as base
 FROM osgeo/grass-gis:main-alpine as grass
-FROM mundialis/esa-snap:s1tbx-31e0b3d as snap
+FROM mundialis/esa-snap:s1tbx-d08c6d7 as snap
 
 FROM base
 
