@@ -20,6 +20,7 @@ ENV GRASS_COMPRESSOR=ZSTD
 ENV GRASS_SKIP_MAPSET_OWNER_CHECK 1
 ENV GISBASE ""
 ENV ACTINIA_CORE_VERSION=7.1.0
+ENV ACTINIA_MODULE_PLUGIN_VERSION=2.10.0
 
 USER root
 
@@ -69,7 +70,7 @@ WORKDIR /build
 # install actinia plugins
 RUN pip install actinia-grassdata-management-plugin==1.0.0 \
     && pip install actinia-metadata-plugin==1.0.4 \
-    && pip install actinia-module-plugin==2.10.0 \
+    && pip install actinia-module-plugin==${ACTINIA_MODULE_PLUGIN_VERSION} \
     && pip install actinia-parallel-plugin==1.2.0 \
     && pip install actinia-satellite-plugin==0.3.0 \
     && pip install actinia-stac-plugin==0.4.0 \
@@ -110,7 +111,8 @@ RUN cd gdal-grass \
 RUN cd .. && rm -rf gdal-grass
 
 # download actinia-module-plugin templates
-RUN git clone --depth 1 --filter=blob:none --sparse \
+RUN git clone --depth 1 --filter=blob:none \
+    --branch ${ACTINIA_MODULE_PLUGIN_VERSION} --sparse \
     https://github.com/actinia-org/actinia-module-plugin.git /tmp/repo \
     && cd /tmp/repo \
     && git sparse-checkout set config/templates/pc_templates \
