@@ -5,7 +5,7 @@ COPY .git /src/actinia-docker/.git
 WORKDIR /src/actinia-docker
 RUN git describe --dirty --tags --long --first-parent > /actinia-docker-version.txt
 
-FROM mundialis/actinia:alpine-dependencies-2026-01-14 as base
+FROM mundialis/actinia:alpine-dependencies-2026-02-14 as base
 FROM osgeo/grass-gis:main-alpine as grass
 FROM mundialis/esa-snap:s1tbx-d08c6d7 as snap
 
@@ -45,7 +45,7 @@ COPY --from=grass /usr/local/grass/etc/proj/ /etc/proj/
 COPY --from=grass /usr/local/grass/etc/colors/ /etc/colors/
 RUN pip3 install --upgrade pip six grass-session --ignore-installed six
 # RUN ln -s /usr/local/grass `grass --config path`
-RUN ln -s /usr/local/grass /usr/local/grass85
+RUN ln -s /usr/local/grass /usr/local/grass86
 RUN grass --tmp-project EPSG:4326 --exec g.version -rge && \
     pdal --version && \
     python3 --version
