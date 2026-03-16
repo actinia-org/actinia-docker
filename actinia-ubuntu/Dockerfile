@@ -18,7 +18,7 @@ ENV GDAL_CACHEMAX=2000 \
     GRASS_COMPRESSOR=ZSTD \
     GISBASE="" \
     ESA_SNAP_VERSION=13 \
-    ACTINIA_CORE_VERSION=7.0.1
+    ACTINIA_CORE_VERSION=7.0.2
 
 USER root
 
@@ -129,7 +129,7 @@ RUN echo "Install Python" \
     actinia-core==${ACTINIA_CORE_VERSION} \
     actinia-grassdata-management-plugin==1.0.0 \
     actinia-metadata-plugin==1.0.4 \
-    actinia-module-plugin==2.9.0 \
+    actinia-module-plugin==2.11.0 \
     actinia-parallel-plugin==1.2.0 \
     actinia-satellite-plugin==0.3.0 \
     actinia-stac-plugin==0.4.0 \
