@@ -5,7 +5,7 @@ COPY .git /src/actinia-docker/.git
 WORKDIR /src/actinia-docker
 RUN git describe --dirty --tags --long --first-parent > /actinia-docker-version.txt
 
-FROM mundialis/actinia:alpine-dependencies-2026-02-14 as base
+FROM mundialis/actinia:alpine-dependencies-2026-03-14 as base
 FROM osgeo/grass-gis:main-alpine as grass
 FROM mundialis/esa-snap:s1tbx-d08c6d7 as snap
 
@@ -19,7 +19,7 @@ ENV GDAL_CACHEMAX=2000
 ENV GRASS_COMPRESSOR=ZSTD
 ENV GRASS_SKIP_MAPSET_OWNER_CHECK 1
 ENV GISBASE ""
-ENV ACTINIA_CORE_VERSION=7.1.0
+ENV ACTINIA_CORE_VERSION=7.1.1
 ENV ACTINIA_MODULE_PLUGIN_VERSION=2.11.0
 
 USER root
