@@ -13,10 +13,6 @@ ENV DEFAULT_CONFIG_PATH=/etc/default/actinia
 RUN pip3 uninstall actinia-core -y
 RUN pip3 uninstall actinia_core -y
 
-COPY actinia-dev/actinia.cfg /etc/default/actinia
-COPY actinia-dev/keycloak.json /etc/default/keycloak.json
-COPY actinia-dev/interim_endpoints.csv /etc/default/actinia_interim_endpoints.csv
-
 WORKDIR /src
 # Even though the code is mounted later, it needs to be installed once
 RUN rm -rf /src/actinia_core
@@ -55,11 +51,11 @@ RUN pip3 install -e .
 
 # RUN pip3 uninstall actinia_processing_lib -y
 # RUN git clone https://github.com/actinia-org/actinia-processing-lib.git /src/actinia-processing-lib
-# RUN pip3 install -e /src/actinia-processing-lib
+# RUN pip3 install -e /src/actinia-processing-lib --no-deps
 
 # RUN pip3 uninstall actinia_rest_lib -y
 # RUN git clone https://github.com/actinia-org/actinia-rest-lib.git /src/actinia-rest-lib
-# RUN pip3 install -e /src/actinia-rest-lib
+# RUN pip3 install -e /src/actinia-rest-lib --no-deps
 
 # RUN pip3 uninstall actinia_satellite_plugin -y
 # RUN git clone https://github.com/actinia-org/actinia-satellite-plugin.git /src/actinia_satellite_plugin
@@ -78,3 +74,7 @@ RUN pip3 install -e .
 # RUN pip3 install -e /src/actinia_tiling_plugin/
 
 # WORKDIR /src/actinia_core
+
+COPY actinia-dev/actinia.cfg /etc/default/actinia
+COPY actinia-dev/keycloak.json /etc/default/keycloak.json
+COPY actinia-dev/interim_endpoints.csv /etc/default/actinia_interim_endpoints.csv
