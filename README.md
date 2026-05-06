@@ -121,6 +121,7 @@ If there is a popup indicating that there is no docker debugger available, these
 - https://marketplace.visualstudio.com/items?itemName=docker.docker
 - https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-docker
 - https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers
+https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-containers
 
 Check if setting of breakpoints is working, e.g. by setting one in `actinia-core/src/actinia_core/version.py`.
 If vscode is not reacting, adjust the pathMappings in `.vscode/launch.json` by replacing `${workspaceFolder}` with an absolute path.
