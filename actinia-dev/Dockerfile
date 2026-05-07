@@ -18,7 +18,7 @@ WORKDIR /src
 RUN rm -rf /src/actinia_core
 RUN git clone https://github.com/actinia-org/actinia-core.git /src/actinia_core
 
-RUN git config --global --add safe.directory /src/actinia*
+RUN git config --global --add safe.directory '/src/actinia*'
 
 WORKDIR /src/actinia_core/
 RUN pip3 install -e .
@@ -42,6 +42,7 @@ RUN pip3 install -e .
 # RUN pip3 install -e /src/actinia-metadata-plugin/
 
 # RUN pip3 uninstall actinia_module_plugin.wsgi -y
+# RUN rm -rf /src/actinia-module-plugin
 # RUN git clone https://github.com/actinia-org/actinia-module-plugin.git /src/actinia-module-plugin
 # RUN pip3 install -e /src/actinia-module-plugin/
 

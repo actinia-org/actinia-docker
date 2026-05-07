@@ -115,8 +115,21 @@ repos/actinia/
 ├── actinia-metadata-plugin
 ├── actinia-module-plugin
 ```
-Then move the `.vscode` folder from this repository one level up and
+Then move the `.vscode` folder from this repository one level up (or create a symbolic link) and
 open the whole actinia folder as workspace in vscode. This can be done by eg. typing `code $PATH_TO_MY_ACTINIA_CHECKOUTS` in a terminal. Then press `F5` and after a few seconds, a browser window should be opened pointing to the version endpoint. For debugging tips, [read the docs](https://code.visualstudio.com/Docs/editor/debugging#_debug-actions).
+If there is a popup indicating that there is no docker debugger available, these extensions might be needed
+- https://marketplace.visualstudio.com/items?itemName=docker.docker
+- https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-docker
+- https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers
+https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-containers
+
+Check if setting of breakpoints is working, e.g. by setting one in `actinia-core/src/actinia_core/version.py`.
+If vscode is not reacting, adjust the pathMappings in `.vscode/launch.json` by replacing `${workspaceFolder}` with an absolute path.
+
+To also have this setup for a plugin,
+- incomment the 3-4 lines `actinia-docker/actinia-dev/Dockerfile` to install in editable mode
+- incomment the volumes in `.vscode/tasks.json` to have the local code mounted into the container
+- add a pathMapping in `.vscode/launch.json`
 
 ## Local dev-setup for actinia-core with Keycloak
 **<span style="color:red">For deployment change passwords in .env file!</span>**
