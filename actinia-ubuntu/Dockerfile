@@ -100,7 +100,7 @@ FROM grass AS actinia
 COPY --link --from=version_info /actinia-docker-version.txt /
 
 # Get build addons
-COPY --link --from=addons /src/grass_addons_build /usr/local/grass
+COPY --link --from=addons /src/grass_addons_build /usr/local/grass86
 
 # Get ESA SNAP
 COPY --link --from=esa_snap /root/.snap /root/
