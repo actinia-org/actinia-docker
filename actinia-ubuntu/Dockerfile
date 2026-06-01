@@ -91,7 +91,12 @@ RUN apt-get update -y \
 # Run ESA SNAP installation script
 COPY actinia-ubuntu/snap/install.sh /src/snap/install_snap.sh
 COPY actinia-ubuntu/snap/response.varfile /src/snap/response.varfile
-RUN sh /src/snap/install_snap.sh
+RUN sh /src/snap/install_snap.sh \
+    # Clean-up unnecessary SNAP files
+    && rm -rf /usr/local/esa-snap/ide
+    && rm -rf /usr/local/esa-snap/*/update*
+    && find /usr/local/esa-snap/ -type f -iname "*.dll" -delete
+    && find /usr/local/esa-snap/ -type f -iname "*.exe" -delete
 
 # Compile final image with actinia
 FROM grass AS actinia
@@ -100,7 +105,7 @@ FROM grass AS actinia
 COPY --link --from=version_info /actinia-docker-version.txt /
 
 # Get build addons
-COPY --link --from=addons /src/grass_addons_build /usr/local/grass86
+COPY --from=addons /src/grass_addons_build /usr/local/grass
 
 # Get ESA SNAP
 COPY --link --from=esa_snap /root/.snap /root/
