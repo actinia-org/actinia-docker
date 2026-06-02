@@ -93,9 +93,9 @@ COPY actinia-ubuntu/snap/install.sh /src/snap/install_snap.sh
 COPY actinia-ubuntu/snap/response.varfile /src/snap/response.varfile
 RUN sh /src/snap/install_snap.sh \
     # Clean-up unnecessary SNAP files
-    && rm -rf /usr/local/esa-snap/ide
-    && rm -rf /usr/local/esa-snap/*/update*
-    && find /usr/local/esa-snap/ -type f -iname "*.dll" -delete
+    && rm -rf /usr/local/esa-snap/ide \
+    && rm -rf /usr/local/esa-snap/*/update* \
+    && find /usr/local/esa-snap/ -type f -iname "*.dll" -delete \
     && find /usr/local/esa-snap/ -type f -iname "*.exe" -delete
 
 # Compile final image with actinia
