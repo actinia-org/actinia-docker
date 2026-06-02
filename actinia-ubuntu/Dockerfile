@@ -1,8 +1,8 @@
 # syntax=docker/dockerfile:1.19@sha256:b6afd42430b15f2d2a4c5a02b919e98a525b785b1aaff16747d2f623364e39b6
 
-# Based on GRASS releasebranch_8_4 (grass)
+# Based on GRASS releasebranch_8_5 (grass)
 # for most recent GRASS, change branch to main
-ARG BRANCH=releasebranch_8_4
+ARG BRANCH=releasebranch_8_5
 
 FROM osgeo/grass-gis:${BRANCH}-ubuntu AS version_info
 COPY .git /src/actinia-docker/.git
@@ -18,7 +18,7 @@ ENV GDAL_CACHEMAX=2000 \
     GRASS_COMPRESSOR=ZSTD \
     GISBASE="" \
     ESA_SNAP_VERSION=13 \
-    ACTINIA_CORE_VERSION=7.1.1
+    ACTINIA_CORE_VERSION=7.0.2
 
 USER root
 
