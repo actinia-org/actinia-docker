@@ -1,3 +1,5 @@
+See also https://hub.docker.com/r/mundialis/actinia/tags and https://hub.docker.com/r/mundialis/actinia-core/tags
+
 # Installation
 
 Requirements: docker and docker-compose
