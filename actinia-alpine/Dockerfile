@@ -1,4 +1,4 @@
-ARG ALPINE_DEPENDENCIES_TAG=alpine-dependencies-2026-09-02
+ARG ALPINE_DEPENDENCIES_TAG=alpine-dependencies-2026-09-08
 
 FROM alpine:3.24 AS version
 RUN apk add git
