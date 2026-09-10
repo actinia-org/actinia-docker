@@ -30,6 +30,9 @@ env:
     # as use of variable fails there
     DOCKERHUB_REPOSITORY: mundialis/actinia
 
+permissions:
+  contents: read
+
 jobs:
 
   # only run for push to main branch
