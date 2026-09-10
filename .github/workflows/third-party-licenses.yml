@@ -1,0 +1,24 @@
+name: Generate Third-Party Licenses
+
+on:
+  release:
+    types: [published]
+
+# the workflow does not require permissions, but to avoid a code security warning this should be explicitly defined:
+permissions: {}
+
+jobs:
+  generate-third-party-licenses-alpine:
+    uses: mundialis/github-workflows/.github/workflows/third-party-licenses.yml@main
+    with:
+      dockerfile: actinia-alpine/Dockerfile
+      # requirements: requirements.txt
+      # pyproject: pyproject.toml
+      additional-packages: "libgdal-dev gdal-bin build-essential"
+  generate-third-party-licenses-alpine-dependencies:
+    uses: mundialis/github-workflows/.github/workflows/third-party-licenses.yml@main
+    with:
+      dockerfile: actinia-alpine/Dockerfile_alpine_dependencies
+      # requirements: requirements.txt
+      # pyproject: pyproject.toml
+      additional-packages: "libgdal-dev gdal-bin build-essential"
