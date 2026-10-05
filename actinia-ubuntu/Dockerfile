@@ -17,15 +17,18 @@ FROM osgeo/grass-gis:${BRANCH}-ubuntu AS grass
 ENV GDAL_CACHEMAX=2000 \
     GRASS_COMPRESSOR=ZSTD \
     GISBASE="" \
-    ESA_SNAP_VERSION=13 \
-    ACTINIA_CORE_VERSION=7.0.2
+    ESA_SNAP_VERSION=14 \
+    JAVA_HOME="/usr/lib/jvm/java-21-openjdk-amd64" \
+    INSTALL4J_JAVA_HOME="/usr/lib/jvm/java-21-openjdk-amd64" \
+    PATH="$JAVA_HOME/bin:$PATH" \
+    ACTINIA_CORE_VERSION=7.1.2
 
 USER root
 
 # Install dependencies (JRE headless with recomended packages) and tools
 RUN apt-get update && apt-get upgrade -y && \
     apt-get install -y --no-install-suggests \
-    default-jre-headless \
+    openjdk-21-jre-headless \
     rsync \
     && apt-get autoremove -y \
     && apt-get clean all \
@@ -71,8 +74,6 @@ RUN mkdir /src/grass_addons && \
 
 # Install ESA SNAP
 FROM grass AS esa_snap
-# Set JAVA _HOME
-ENV JAVA_HOME="/usr/lib/jvm/java-21-openjdk-amd64"
 
 WORKDIR /src
 
@@ -81,7 +82,7 @@ ENV LD_LIBRARY_PATH=".:$LD_LIBRARY_PATH"
 # Install JRE (with recomended packages and maven as build tool for SNAP
 RUN apt-get update -y \
     && apt-get install -y --no-install-suggests \
-    default-jdk-headless \
+    openjdk-21-jdk-headless \
     maven && \
     apt-get autoremove -y && \
     apt-get clean -y && \
@@ -114,8 +115,7 @@ COPY --link --from=esa_snap /usr/local/esa-snap /usr/local/esa-snap
 
 # Add ESA SNAP to PATH, point to system Java JRE in snap.conf
 # and point to actinia config file for testing
-ENV JAVA_HOME="/usr/lib/jvm/java-21-openjre-amd64" \
-    PATH="/usr/local/esa-snap/bin:${PATH}" \
+ENV PATH="/usr/local/esa-snap/bin:${PATH}" \
     ACTINIA_CUSTOM_TEST_CFG=/etc/default/actinia
 
 # Set link to match actinia default config (needed for tests)
