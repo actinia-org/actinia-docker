@@ -4,11 +4,10 @@ on:
   release:
     types: [published]
 
-# the workflow does not require permissions, but to avoid a code security warning this should be explicitly defined:
-permissions: {}
-
 jobs:
   generate-third-party-licenses-alpine:
+    permissions:
+      contents: write
     uses: mundialis/github-workflows/.github/workflows/third-party-licenses.yml@main
     with:
       dockerfile: actinia-alpine/Dockerfile
@@ -16,6 +15,8 @@ jobs:
       # pyproject: pyproject.toml
       additional-packages: "libgdal-dev gdal-bin build-essential"
   generate-third-party-licenses-alpine-dependencies:
+    permissions:
+      contents: write
     uses: mundialis/github-workflows/.github/workflows/third-party-licenses.yml@main
     with:
       dockerfile: actinia-alpine/Dockerfile_alpine_dependencies
