@@ -133,6 +133,15 @@ ENV ADDITIONAL_PYTHON_PACKAGES="\
 # RUN apk add openblas openblas-dev lapack-dev
 RUN pip3 install --upgrade $ADDITIONAL_PYTHON_PACKAGES
 
+# Python 3.14 includes Zstandard support in its standard library (compression.zstd),
+# but the native _zstd extension is missing from the Alpine 3.24 Python package.
+#   File "/usr/lib/python3.14/compression/zstd/__init__.py", line 29, in <module>
+#     import _zstd
+# ModuleNotFoundError: No module named '_zstd'
+RUN apk add --no-cache \
+    --repository=https://dl-cdn.alpinelinux.org/alpine/edge/main \
+    python3-zstd
+
 # Install actinia dependencies
 # Duplicated in final images, only here to safe time
 RUN pip3 install actinia-core && pip3 uninstall actinia-core -y
