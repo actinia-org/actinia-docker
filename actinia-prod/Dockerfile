@@ -1,4 +1,4 @@
-FROM mundialis/actinia:2.17.4
+FROM mundialis/actinia:2.17.5
 
 COPY actinia.cfg /etc/default/actinia
 COPY start.sh /src/start.sh
