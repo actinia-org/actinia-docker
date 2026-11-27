@@ -2,5 +2,14 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:base"
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "managerFilePatterns": ["/^Dockerfile$/"],
+      "matchStrings": ["ENV ACTINIA_CORE_VERSION=(?<currentValue>[^\\s]+)"],
+      "packageNameTemplate": "actinia-org/actinia-core",
+      "datasourceTemplate": "github-releases",
+    }
   ]
 }
